@@ -13,6 +13,18 @@ namespace PokemonGo.RocketAPI.Logic
     /// </summary>
     public class LogicInfoObservable
     {
+        public delegate void GeoLocationPokemonHandler(POGOProtos.Map.Pokemon.MapPokemon value, string message);
+        public event GeoLocationPokemonHandler HandleGetMonsterGeoLocations = delegate { };
+        public void PushNewMonsterGeoLocations(POGOProtos.Map.Pokemon.MapPokemon newValue, string tipmessage)
+        {
+            HandleGetMonsterGeoLocations(newValue, tipmessage);
+        }
+
+        public event GeoLocationHandler HandleNewShopGeoLocations = delegate { };
+        public void PushNewShopGeoLocations(GeoCoordinate newValue)
+        {
+            HandleNewShopGeoLocations(newValue);
+        }
         /// <summary>
         /// GeoLocations
         /// </summary>

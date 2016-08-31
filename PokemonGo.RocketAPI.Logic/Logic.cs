@@ -363,7 +363,9 @@ namespace PokemonGo.RocketAPI.Logic
                     continue;
                 }
                 Logger.ColoredConsoleWrite(ConsoleColor.Green, $"Next Pokestop: {fortInfo.Name} in {distance:0.##}m distance.");
+                _infoObservable.PushNewShopGeoLocations(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude));
                 var update = await _navigation.HumanLikeWalking(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude), _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
+                Logger.ColoredConsoleWrite(ConsoleColor.Green, $"我走到了!!! Pokestop: {fortInfo.Name} , Id:{pokeStop.Id}");
 
                 if (_clientSettings.pauseAtPokeStop)
                 {
@@ -392,6 +394,12 @@ namespace PokemonGo.RocketAPI.Logic
                     var farmed = await CheckAndFarmNearbyPokeStop(pokeStop, _client, fortInfo);
                     await RandomHelper.RandomDelay(50, 2000); // wait to start moving again 
                 }
+            }
+            //走回原點
+            if (_clientSettings.WalkBackToDefaultLocation)
+            {
+                Logger.ColoredConsoleWrite(ConsoleColor.Green, "走回原點重來 Walking back to default location.");
+                await _navigation.HumanLikeWalking(new GeoCoordinate(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude), _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
             }
         }
         private async Task LogStatsEtc()
@@ -637,6 +645,9 @@ namespace PokemonGo.RocketAPI.Logic
                             pokemonCatchCount++;
                         }
 
+                        string tipmessage = $"{StringUtils.getPokemonNameByLanguage(_clientSettings, pokemon.PokemonId)} CP {encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp} IV {PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00")}%";
+                        _infoObservable.PushNewMonsterGeoLocations(pokemon, tipmessage);
+
                         if (_telegram != null)
                             _telegram.sendInformationText(TelegramUtil.TelegramUtilInformationTopics.Catch, StringUtils.getPokemonNameByLanguage(_clientSettings, pokemon.PokemonId), encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp, PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00"), bestPokeball, caughtPokemonResponse.CaptureAward.Xp.Sum());
 
@@ -710,6 +721,7 @@ namespace PokemonGo.RocketAPI.Logic
                 forceHit = true;
             }
             //round to 2 decimals  
+            forceHit = true;
             normalizedRecticleSize = Math.Round(normalizedRecticleSize, 2);
             if (forceHit) { Logger.ColoredConsoleWrite(ConsoleColor.DarkMagenta, $"{hitTxt} throw as {spinTxt} ball."); }
             return await _client.Encounter.CatchPokemon(pokemon.EncounterId, pokemon.SpawnPointId, bestPokeball, forceHit, normalizedRecticleSize, spinModifier);
@@ -762,6 +774,98 @@ namespace PokemonGo.RocketAPI.Logic
                 await RandomHelper.RandomDelay(30000, 35000);
             }
         }
+
+        private async Task ExecuteCatchLurePokemons(FortData currentFortData)
+        {
+            var fortId = currentFortData.Id;
+            var pokemonId = currentFortData.LureInfo.ActivePokemonId;
+            var encounterId = currentFortData.LureInfo.EncounterId;
+            Logger.ColoredConsoleWrite(ConsoleColor.White, $"準備花怪pokemonId:{pokemonId} encounterId:{encounterId}");
+            await RandomHelper.RandomDelay(1000, 2000);
+            var bestPokeball = await GetOneBall();
+            if (bestPokeball == ItemId.ItemUnknown)
+            {
+                Logger.ColoredConsoleWrite(ConsoleColor.Red, $"No Pokeballs! - missed ");
+                return;
+            }
+            CatchPokemonResponse caughtPokemonResponse = null;
+            do
+            {
+                double spinModifier = 1;
+                double normalizedReticleSize = 1.95;// + Helpers.RandomHelper.getRandomMaloDoubleInteger() * 0.05;////1.95 + Math.random() * 0.05,
+                double normalizedHitPos = 1;// Helpers.RandomHelper.getRandomDoubleInteger(0, 2);
+                bool hit = true;// Helpers.RandomHelper.getRandBool();
+
+                Logger.ColoredConsoleWrite(ConsoleColor.White, "normalizedReticleSize=" + normalizedReticleSize.ToString() + ", spinModifier=" + spinModifier.ToString() + " ,normalizedHitPos=" + normalizedHitPos.ToString() + ",hit=" + hit.ToString());
+                //caughtPokemonResponse = await _client.Encounter.CatchPokemon(pokemon.EncounterId, pokemon.SpawnPointId, bestPokeball);
+                caughtPokemonResponse = await _client.Encounter.CatchPokemon(encounterId, fortId, bestPokeball,hit, normalizedReticleSize,
+                    spinModifier,
+                    normalizedHitPos
+                    );
+                Logger.ColoredConsoleWrite(ConsoleColor.White, $"這顆球的結果是 .... " + caughtPokemonResponse.Status);
+                await RandomHelper.RandomDelay(1000, 3000);
+            } while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed || caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
+            if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess)
+            {
+                #region =============  成功抓到
+                Logger.ColoredConsoleWrite(ConsoleColor.White, $"灑花Caught {pokemonId} got {caughtPokemonResponse.CaptureAward.Xp.Sum()} XP.");
+                #endregion
+            }
+            else
+            {
+                Logger.ColoredConsoleWrite(ConsoleColor.Red, $"灑花 逃走  {pokemonId}: {caughtPokemonResponse.Status}");
+            }
+        }
+
+        private async Task<ItemId> GetOneBall()
+        {
+            var items = await _client.Inventory.GetItems();
+            var balls = items.Where(i => ((ItemId)i.ItemId == ItemId.ItemPokeBall
+                                     || (ItemId)i.ItemId == ItemId.ItemGreatBall
+                                     || (ItemId)i.ItemId == ItemId.ItemUltraBall
+                                     || (ItemId)i.ItemId == ItemId.ItemMasterBall) && i.ItemId > 0).GroupBy(i => ((ItemId)i.ItemId)).ToList();
+            if (balls.Count() == 0) return ItemId.ItemUnknown;
+
+            var pokeBalls = balls.Any(g => g.Key == ItemId.ItemPokeBall);
+            var greatBalls = balls.Any(g => g.Key == ItemId.ItemGreatBall);
+            var ultraBalls = balls.Any(g => g.Key == ItemId.ItemUltraBall);
+            var masterBalls = balls.Any(g => g.Key == ItemId.ItemMasterBall);
+
+            var coll = _clientSettings.itemRecycleFilter;
+            foreach (KeyValuePair<ItemId, int> v in coll)
+            {
+                if (v.Key == ItemId.ItemPokeBall && v.Value == 0)
+                {
+                    pokeBalls = false;
+                }
+                else if (v.Key == ItemId.ItemGreatBall && v.Value == 0)
+                {
+                    greatBalls = false;
+                }
+                else if (v.Key == ItemId.ItemUltraBall && v.Value == 0)
+                {
+                    ultraBalls = false;
+                }
+                else if (v.Key == ItemId.ItemMasterBall && v.Value == 0)
+                {
+                    masterBalls = false;
+                }
+            }
+            if (pokeBalls)
+                return ItemId.ItemPokeBall;
+
+            if (greatBalls)
+                return ItemId.ItemGreatBall;
+
+            if (ultraBalls)
+                return ItemId.ItemUltraBall;
+
+            if (masterBalls)
+                return ItemId.ItemMasterBall;
+
+            return balls.OrderBy(c => c.Key).First().Key;
+        }
+
 
         private async Task StartIncubation()
         {
