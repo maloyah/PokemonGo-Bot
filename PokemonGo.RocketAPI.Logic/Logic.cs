@@ -439,6 +439,7 @@ namespace PokemonGo.RocketAPI.Logic
                 var pokeStopInfo = $"{fortInfo.Name}{Environment.NewLine}Visited:{DateTime.Now.ToString("HH:mm:ss")}{Environment.NewLine}";
                 if (fortSearch.ExperienceAwarded > 0)
                 {
+                    #region ===============  有經驗值fortSearch.ExperienceAwarded
                     string egg = "/";
                     if (fortSearch.PokemonDataEgg != null)
                     {
@@ -466,7 +467,26 @@ namespace PokemonGo.RocketAPI.Logic
 
                     if (_telegram != null)
                         _telegram.sendInformationText(TelegramUtil.TelegramUtilInformationTopics.Pokestop, fortInfo.Name, fortSearch.ExperienceAwarded, eggs, fortSearch.GemsAwarded, StringUtils.GetSummedFriendlyNameOfItemAwardList(fortSearch.ItemsAwarded));
+                    #endregion
                 }
+                #region ============ 找花怪
+                if (pokeStop.LureInfo != null)
+                {
+                    Logger.ColoredConsoleWrite(ConsoleColor.White, $"這裡有花 Pokestop: {fortInfo.Name} ");
+                    var fortId = pokeStop.Id;
+                    var pokemonId = pokeStop.LureInfo.ActivePokemonId;
+                    var encounterId = pokeStop.LureInfo.EncounterId;
+                    var encounter = await Logic._client.Encounter.EncounterLurePokemon(encounterId, fortId);
+                    if (encounter.Result == DiskEncounterResponse.Types.Result.Success)
+                    {
+                        await ExecuteCatchLurePokemons(pokeStop);
+                    }
+                    else
+                    {
+                        Logger.ColoredConsoleWrite(ConsoleColor.Red, $"Encounter problem: Lure Pokemon {encounter.Result}");
+                    }
+                }
+                #endregion
                 _infoObservable.PushPokeStopInfoUpdate(pokeStop.Id, pokeStopInfo);
                 return true;
             }
@@ -608,13 +628,13 @@ namespace PokemonGo.RocketAPI.Logic
                         caughtPokemonResponse = await CatchPokemonWithRandomVariables(pokemon, bestPokeball, forceHit);
                         if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed)
                         {
-                            Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"Missed {StringUtils.getPokemonNameByLanguage(_clientSettings, pokemon.PokemonId)} while using {bestPokeball}");
+                            Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"沒丟中Missed {StringUtils.getPokemonNameByLanguage(_clientSettings, pokemon.PokemonId)} while using {bestPokeball}");
                             missCount++;
                             await RandomHelper.RandomDelay(1500, 2000);
                         }
                         else if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape)
                         {
-                            Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"{StringUtils.getPokemonNameByLanguage(_clientSettings, pokemon.PokemonId)} escaped while using {bestPokeball}");
+                            Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"被掙開{StringUtils.getPokemonNameByLanguage(_clientSettings, pokemon.PokemonId)} escaped while using {bestPokeball}");
                             escaped = true;
                             //reset forceHit in case we randomly triggered on last throw.
                             forceHit = false;
@@ -656,7 +676,7 @@ namespace PokemonGo.RocketAPI.Logic
                     }
                     else
                     {
-                        Logger.ColoredConsoleWrite(ConsoleColor.DarkYellow, $"{StringUtils.getPokemonNameByLanguage(_clientSettings, pokemon.PokemonId)} CP {encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp} IV {PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00")}% got away while using {bestPokeball}..");
+                        Logger.ColoredConsoleWrite(ConsoleColor.DarkYellow, $"逃走了{StringUtils.getPokemonNameByLanguage(_clientSettings, pokemon.PokemonId)} CP {encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp} IV {PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00")}% got away while using {bestPokeball}..");
                         failed_softban++;
                     }
                 }
