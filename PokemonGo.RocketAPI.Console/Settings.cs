@@ -264,10 +264,25 @@ namespace PokemonGo.RocketAPI.Console
             get { return Globals.BreakAtLure; }
             set { Globals.BreakAtLure = value; }
         }
+        public bool UseAnimationTimes
+        {
+            get { return Globals.UseAnimationTimes; }
+            set { Globals.UseAnimationTimes = value; }
+        }
         public bool UseLureAtBreak
         {
             get { return Globals.UseLureAtBreak; }
             set { Globals.UseLureAtBreak = value; }
+        }
+        public bool UseGoogleMapsAPI
+        {
+            get { return Globals.UseGoogleMapsAPI; }
+            set { Globals.UseGoogleMapsAPI = value; }
+        }
+        public string GoogleMapsAPIKey
+        {
+            get { return Globals.GoogleMapsAPIKey; }
+            set { Globals.GoogleMapsAPIKey = value; }
         }
         public bool RandomReduceSpeed
         {

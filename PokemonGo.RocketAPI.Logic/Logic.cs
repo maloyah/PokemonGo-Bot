@@ -21,6 +21,14 @@ using POGOProtos.Data;
 using System.Threading;
 using POGOProtos.Inventory;
 using Newtonsoft.Json;
+using GoogleMapsApi;
+using GoogleMapsApi.Entities.Common;
+using GoogleMapsApi.Entities.Directions.Request;
+using GoogleMapsApi.Entities.Directions.Response;
+using GoogleMapsApi.Entities.Geocoding.Request;
+using GoogleMapsApi.Entities.Geocoding.Response;
+using GoogleMapsApi.StaticMaps;
+using GoogleMapsApi.StaticMaps.Entities;
 
 namespace PokemonGo.RocketAPI.Logic
 {
@@ -176,7 +184,10 @@ namespace PokemonGo.RocketAPI.Logic
                 {
                     _clientSettings.pauseAtPokeStop = true;
                     if (_clientSettings.BreakLength > 0)
-                        resumetimestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds + _clientSettings.BreakLength;
+                    {
+                        resumetimestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds + _clientSettings.BreakLength * 60 * 1000;
+                        pausetimestamp = -10000;
+                    }
                     else
                     {
                         resumetimestamp = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds + 10 * 60 * 1000;
@@ -390,7 +401,7 @@ namespace PokemonGo.RocketAPI.Logic
 
             if (_clientSettings.MaxWalkingRadiusInMeters != 0)
             {
-                pokeStops = pokeStops.Where(i => LocationUtils.CalculateDistanceInMeters(_client.CurrentLatitude, _client.CurrentLongitude, i.Latitude, i.Longitude) <= _clientSettings.MaxWalkingRadiusInMeters).ToArray();
+                pokeStops = pokeStops.Where(i => LocationUtils.CalculateDistanceInMeters(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, i.Latitude, i.Longitude) <= _clientSettings.MaxWalkingRadiusInMeters).ToArray();
                 if (pokeStops.Count() == 0)
                 {
                     Logger.ColoredConsoleWrite(ConsoleColor.Red, "We can't find any PokeStops in a range of " + _clientSettings.MaxWalkingRadiusInMeters + "m!");
@@ -449,11 +460,65 @@ namespace PokemonGo.RocketAPI.Logic
                     var rInt = r.Next(0, 5);
                     if (rInt == 0)
                     {
-                        Logger.ColoredConsoleWrite(ConsoleColor.Yellow, $"Random Lower Walk Speed Enabled and randomly triggered - Setting Walk speed for this leg to " + _clientSettings.MinWalkSpeed + "km/h");
-                        walkspeed = _clientSettings.MinWalkSpeed;
+                        var rintwalk = r.Next(_clientSettings.MinWalkSpeed, (int)_clientSettings.WalkingSpeedInKilometerPerHour);
+                        Logger.ColoredConsoleWrite(ConsoleColor.Yellow, $"Random Lower Walk Speed Enabled and randomly triggered - Setting Walk speed for this leg to " + rintwalk + "km/h");
+                        walkspeed = rintwalk;
                     }
                 }
-                var update = await _navigation.HumanLikeWalking(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude), walkspeed, ExecuteCatchAllNearbyPokemons);
+                if (_clientSettings.UseGoogleMapsAPI)
+                {
+                    Logger.ColoredConsoleWrite(ConsoleColor.Yellow, $"Getting Google Maps Routing");
+                    if (_clientSettings.GoogleMapsAPIKey != null)
+                    {
+                        DirectionsRequest directionsRequest = new DirectionsRequest();
+                        directionsRequest.ApiKey = _clientSettings.GoogleMapsAPIKey;
+                        directionsRequest.TravelMode = TravelMode.Walking;
+                        directionsRequest.Origin = _client.CurrentLatitude + "," + _client.CurrentLongitude;
+                        directionsRequest.Destination = pokeStop.Latitude + "," + pokeStop.Longitude;
+
+                        DirectionsResponse directions = GoogleMaps.Directions.Query(directionsRequest);
+
+                        if (directions.Status == DirectionsStatusCodes.OK)
+                        {
+                            var steps = directions.Routes.First().Legs.First().Steps;
+                            var stepcount = 0;                           
+                            foreach (var step in steps)
+                            {
+                                var directiontext = Helpers.Utils.HtmlRemoval.StripTagsRegexCompiled(step.HtmlInstructions);
+                                Logger.ColoredConsoleWrite(ConsoleColor.Green, directiontext);
+                                var update = await _navigation.HumanLikeWalking(new GeoCoordinate(step.EndLocation.Latitude, step.EndLocation.Longitude), walkspeed, ExecuteCatchAllNearbyPokemons);
+                                stepcount++;
+                                if (stepcount == steps.Count())
+                                {
+                                    Logger.ColoredConsoleWrite(ConsoleColor.Green, "Destination Reached!");
+                                }
+                            }
+                        }
+                        else if (directions.Status == DirectionsStatusCodes.REQUEST_DENIED)
+                        {
+                            Logger.ColoredConsoleWrite(ConsoleColor.Green, "Request Failed! Bad API key?");
+                            var update = await _navigation.HumanLikeWalking(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude), walkspeed, ExecuteCatchAllNearbyPokemons);
+                        }
+                        else if (directions.Status == DirectionsStatusCodes.OVER_QUERY_LIMIT)
+                        {
+                            Logger.ColoredConsoleWrite(ConsoleColor.Green, "Over 2500 queries today! Are you botting unsafely? :)");
+                            var update = await _navigation.HumanLikeWalking(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude), walkspeed, ExecuteCatchAllNearbyPokemons);
+                        }
+                        else
+                        {
+                            var update = await _navigation.HumanLikeWalking(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude), walkspeed, ExecuteCatchAllNearbyPokemons);
+                        }
+                    }
+                    else
+                    {
+                        Logger.ColoredConsoleWrite(ConsoleColor.Red, $"API Key not found in Client Settings! Using default method instead.");
+                        var update = await _navigation.HumanLikeWalking(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude), walkspeed, ExecuteCatchAllNearbyPokemons);
+                    }
+                }
+                else
+                {
+                    var update = await _navigation.HumanLikeWalking(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude), walkspeed, ExecuteCatchAllNearbyPokemons);
+                }
                 var addedlure = false;
 
                 Logger.ColoredConsoleWrite(ConsoleColor.Green, $"我走到了!!! Pokestop: {fortInfo.Name} , Id:{pokeStop.Id}");
@@ -662,10 +727,10 @@ namespace PokemonGo.RocketAPI.Logic
                             if (((probability.HasValue && probability.Value < _clientSettings.razzberry_chance) || escaped) && _clientSettings.UseRazzBerry && !used)
                             {
                                 var bestBerry = await GetBestBerry(encounterPokemonResponse?.WildPokemon);
-                                var berries = inventoryBerries.Where(p => (ItemId)p.ItemId == bestBerry).FirstOrDefault();
-                                if (berries.Count <= 0) berryOutOfStock = true;
                                 if (bestBerry != ItemId.ItemUnknown)
                                 {
+                                    var berries = inventoryBerries.Where(p => (ItemId)p.ItemId == bestBerry).FirstOrDefault();
+                                    if (berries.Count <= 0) berryOutOfStock = true;
                                     if (!berryOutOfStock)
                                     {
                                         //Throw berry
@@ -681,6 +746,12 @@ namespace PokemonGo.RocketAPI.Logic
                                         escaped = true;
                                         used = true;
                                     }
+                                }
+                                else
+                                {
+                                    berryThrown = true;
+                                    escaped = true;
+                                    used = true;
                                 }
                             }
                             // limit number of balls wasted by misses and log for UX because fools be tripin
@@ -774,7 +845,7 @@ namespace PokemonGo.RocketAPI.Logic
                             _infoObservable.PushNewMonsterGeoLocations(pokemon, tipmessage);
 
                             _botStats.AddPokemon(1);
-                            await RandomHelper.RandomDelay(800, 1500);
+                            await RandomHelper.RandomDelay(1500, 2000);
                         }
                         else
                         {
@@ -793,7 +864,7 @@ namespace PokemonGo.RocketAPI.Logic
                     {
                         Logger.ColoredConsoleWrite(ConsoleColor.Red, $"Error catching Pokemon: {encounterPokemonResponse?.Status}");
                     }
-                    await RandomHelper.RandomDelay(200, 300);
+                    await RandomHelper.RandomDelay(1500, 2000);
                 }
             }
             else
@@ -904,8 +975,14 @@ namespace PokemonGo.RocketAPI.Logic
                         Logger.ColoredConsoleWrite(ConsoleColor.Red, $"Failed to evolve {pokemon.PokemonId}. EvolvePokemonOutProto.Result was {evolvePokemonOutProto.Result}", LogLevel.Info);
                     }
                 }
-
-                await RandomHelper.RandomDelay(30000, 35000);
+                if (_clientSettings.UseAnimationTimes)
+                {
+                    await RandomHelper.RandomDelay(30000, 35000);
+                }
+                else
+                {
+                    await RandomHelper.RandomDelay(500, 600);
+                }
             }
         }
 
@@ -1015,7 +1092,7 @@ namespace PokemonGo.RocketAPI.Logic
 
                 var kmWalked = stats.KmWalked;
 
-                var rememberedIncubatorsFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "\\Configs", "incubators.json");
+                var rememberedIncubatorsFilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory + "\\Configs", "incubators.json");
                 var rememberedIncubators = GetRememberedIncubators(rememberedIncubatorsFilePath);
 
                 foreach (var incubator in rememberedIncubators)
@@ -1273,7 +1350,7 @@ namespace PokemonGo.RocketAPI.Logic
                                         || (ItemId)i.ItemId == ItemId.ItemPinapBerry).GroupBy(i => (ItemId)i.ItemId).ToList();
             if (berries.Count() == 0)
             {
-                Logger.ColoredConsoleWrite(ConsoleColor.Red, $"No Berrys to select!", LogLevel.Info);
+                Logger.ColoredConsoleWrite(ConsoleColor.Red, $"No Berrys to select! - Using next best ball instead", LogLevel.Info);
                 return ItemId.ItemUnknown;
             }
 
@@ -1346,7 +1423,7 @@ namespace PokemonGo.RocketAPI.Logic
         }
         private static List<IncubatorUsage> GetRememberedIncubators(string filePath)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filePath));
 
             if (File.Exists(filePath))
                 return JsonConvert.DeserializeObject<List<IncubatorUsage>>(File.ReadAllText(filePath, Encoding.UTF8));
@@ -1356,7 +1433,7 @@ namespace PokemonGo.RocketAPI.Logic
 
         private static void SaveRememberedIncubators(List<IncubatorUsage> incubators, string filePath)
         {
-            Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filePath));
 
             File.WriteAllText(filePath, JsonConvert.SerializeObject(incubators), Encoding.UTF8);
         }
