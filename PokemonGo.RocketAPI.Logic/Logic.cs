@@ -521,8 +521,8 @@ namespace PokemonGo.RocketAPI.Logic
 
                 if (_clientSettings.MaxWalkingRadiusInMeters != 0 && distanceFromStart > _clientSettings.MaxWalkingRadiusInMeters)
                 {
-                    Logger.ColoredConsoleWrite(ConsoleColor.Green, "You're outside of the defined max. walking radius. Walking back!");
-                    var walkHome = await _navigation.HumanLikeWalking(new GeoCoordinate(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude), _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
+                    Logger.ColoredConsoleWrite(ConsoleColor.Green, "You're outside of the defined max. walking radius. Walking back! ¤~¤£­n«¨");
+                    //var walkHome = await _navigation.HumanLikeWalking(new GeoCoordinate(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude), _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
                 }
                 _infoObservable.PushNewGeoLocations(new GeoCoordinate(_client.CurrentLatitude, _client.CurrentLongitude));
 
@@ -566,7 +566,7 @@ namespace PokemonGo.RocketAPI.Logic
                         directionsRequest.TravelMode = TravelMode.Walking;
                         directionsRequest.Origin = _client.CurrentLatitude + "," + _client.CurrentLongitude;
                         directionsRequest.Destination = pokeStop.Latitude + "," + pokeStop.Longitude;
-
+                        directionsRequest.Language = "zh-TW";
                         DirectionsResponse directions = GoogleMaps.Directions.Query(directionsRequest);
 
                         if (directions.Status == DirectionsStatusCodes.OK)
