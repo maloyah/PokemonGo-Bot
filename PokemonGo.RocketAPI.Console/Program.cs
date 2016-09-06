@@ -26,6 +26,7 @@ namespace PokemonGo.RocketAPI.Console
         public static string evolve = Path.Combine(path, "Evolve.txt");
         public static string lastcords = Path.Combine(path, "LastCoords.txt");
         public static string huntstats = Path.Combine(path, "HuntStats.txt");
+        public static string miscSettings = Path.Combine(path, "misc.txt");
         public static string cmdCoords = string.Empty;
 
         [STAThread]
@@ -292,6 +293,12 @@ namespace PokemonGo.RocketAPI.Console
                 }
             }
 
+            if(!File.Exists(miscSettings))
+            {
+                var f = File.Create(miscSettings);
+                f.Close();
+            }
+
             Logger.SetLogger(new Logging.ConsoleLogger(LogLevel.Info));
 
             Globals.infoObservable.HandleNewHuntStats += SaveHuntStats;
@@ -440,12 +447,13 @@ namespace PokemonGo.RocketAPI.Console
         public static bool UseGoogleMapsAPI = false;
         public static string GoogleMapsAPIKey;
         public static bool RandomReduceSpeed = false;
+        public static bool UseBreakFields = false;
         public static double TimeToRun;
         public static int PokemonCatchLimit = 1000;
         public static int PokestopFarmLimit = 2000;
         public static int XPFarmedLimit = 150000;
-        public static int BreakInterval = 50;
-        public static int BreakLength = 10;
+        public static int BreakInterval = 0;
+        public static int BreakLength = 0;
         public static int MinWalkSpeed = 3;
         public static int navigation_option = 1;
         public static bool useluckyegg = true;
@@ -472,5 +480,7 @@ namespace PokemonGo.RocketAPI.Console
         public static bool Espiral = false;
 
         public static bool MapLoaded = false;
+
+        public static bool logPokemons = false;
     }
 }
