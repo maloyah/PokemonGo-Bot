@@ -53,6 +53,12 @@ namespace PokemonGo.RocketAPI.Console
             this.PokemonListView.ColumnClick += new ColumnClickEventHandler(PokemonListView_ColumnClick);
         }
 
+        private void Pokemons_Close(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            this.WindowState = FormWindowState.Minimized;
+        }
+
         public async Task check()
         {
             while (true)
@@ -139,6 +145,12 @@ namespace PokemonGo.RocketAPI.Console
                     columnheader = new ColumnHeader();
                     columnheader.Text = "SpecialAttack (DPS)";
                     PokemonListView.Columns.Add(columnheader);
+                    columnheader = new ColumnHeader();
+                    columnheader.Text = "#";
+                    PokemonListView.Columns.Add(columnheader);
+                    columnheader = new ColumnHeader();
+                    columnheader.Text = "% CP";
+                    PokemonListView.Columns.Add(columnheader);
 
                     PokemonListView.BeginUpdate();
                     foreach (var pokemon in pokemons)
@@ -161,7 +173,7 @@ namespace PokemonGo.RocketAPI.Console
                             .Select(f => f.Candy_)
                             .First();
                         listViewItem.SubItems.Add(string.Format("{0}", pokemon.Cp));
-                        listViewItem.SubItems.Add(string.Format("{0}% {1}-{2}-{3}", PokemonInfo.CalculatePokemonPerfection(pokemon).ToString("0.00"), pokemon.IndividualAttack, pokemon.IndividualDefense, pokemon.IndividualStamina));
+                        listViewItem.SubItems.Add(string.Format("{0}% {1}-{2}-{3}", PokemonInfo.CalculatePokemonPerfectionIV(pokemon).ToString("0.00"), pokemon.IndividualAttack, pokemon.IndividualDefense, pokemon.IndividualStamina));
                         listViewItem.SubItems.Add(string.Format("{0}", PokemonInfo.GetLevel(pokemon)));
                         listViewItem.ImageKey = pokemon.PokemonId.ToString();
 
@@ -191,7 +203,8 @@ namespace PokemonGo.RocketAPI.Console
                         listViewItem.SubItems.Add(string.Format("{0}/{1}", pokemon.Stamina, pokemon.StaminaMax));
                         listViewItem.SubItems.Add(string.Format("{0}", pokemon.Move1));
                         listViewItem.SubItems.Add(string.Format("{0} ({1})", pokemon.Move2, PokemonInfo.GetAttack(pokemon.Move2)));
-
+                        listViewItem.SubItems.Add(string.Format("{0}", (int)pokemon.PokemonId));
+                        listViewItem.SubItems.Add(string.Format("{0}", PokemonInfo.CalculatePokemonPerfection(pokemon).ToString("0.00")));
                         PokemonListView.Items.Add(listViewItem);
                     }
                     PokemonListView.EndUpdate();

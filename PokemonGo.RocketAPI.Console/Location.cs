@@ -131,8 +131,8 @@ namespace PokemonGo.RocketAPI.Console
             if (_pokeStopsMarks.ContainsKey(pokeStopId)) {
                 //changeType
                 var newMark = new GMarkerGoogle(_pokeStopsMarks[pokeStopId].Position, GMarkerGoogleType.blue_small);
-                newMark.ToolTipText = info;
-                newMark.ToolTip.Font = new System.Drawing.Font("Arial", 12, System.Drawing.GraphicsUnit.Pixel);
+                //newMark.ToolTipText = info;
+                //newMark.ToolTip.Font = new System.Drawing.Font("Arial", 12, System.Drawing.GraphicsUnit.Pixel);
                 
                 try
                 {
@@ -154,10 +154,10 @@ namespace PokemonGo.RocketAPI.Console
             foreach (var pokeStop in pokeStops) {
                 
                 GMarkerGoogle pokeStopMaker = new GMarkerGoogle(new PointLatLng(pokeStop.Latitude, pokeStop.Longitude), GMarkerGoogleType.purple_small);
-                if (pokeStop.LureInfo != null)
-                {
-                    pokeStopMaker = new GMarkerGoogle(new PointLatLng(pokeStop.Latitude, pokeStop.Longitude), GMarkerGoogleType.green_dot);
-                }
+                //if (pokeStop.LureInfo != null)
+                //{
+                //    pokeStopMaker = new GMarkerGoogle(new PointLatLng(pokeStop.Latitude, pokeStop.Longitude), GMarkerGoogleType.green_dot);
+                //}
                 pokeStopMaker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
                 _pokeStopsMarks.Add(pokeStop.Id, pokeStopMaker);
                 _pokeStopsOverlay.Markers.Add(pokeStopMaker);
