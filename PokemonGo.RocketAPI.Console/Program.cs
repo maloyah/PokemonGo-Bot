@@ -18,6 +18,7 @@ namespace PokemonGo.RocketAPI.Console
     {
         public static string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configs");
         public static string path_translation = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Translations");
+        public static string path_device = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Device");
         public static string account = Path.Combine(path, "Config.txt");
         public static string items = Path.Combine(path, "Items.txt");
         public static string walkSetting = Path.Combine(path, "walk.txt");
@@ -27,7 +28,11 @@ namespace PokemonGo.RocketAPI.Console
         public static string lastcords = Path.Combine(path, "LastCoords.txt");
         public static string huntstats = Path.Combine(path, "HuntStats.txt");
         public static string miscSettings = Path.Combine(path, "misc.txt");
+        public static string deviceSettings = Path.Combine(path_device, "DeviceInfo.txt");
         public static string cmdCoords = string.Empty;
+
+        static string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+        public static string pokelog = Path.Combine(logPath, "pokelog.txt");
 
         [STAThread]
         static void Main(string[] args)
@@ -51,17 +56,20 @@ namespace PokemonGo.RocketAPI.Console
                 }
             }
 
+            if (!Directory.Exists(logPath))
+            {
+                Directory.CreateDirectory(logPath);
+
+            }
+
+            if (!File.Exists(pokelog))
+            {
+                File.Create(pokelog).Close();
+            }
 
             if (args != null && args.Length > 0 && args[0].Contains("-nogui"))
             {
                 Logger.ColoredConsoleWrite(ConsoleColor.Red, "You added -nogui! If you didnt setup correctly with the GUI. It wont work.");
-                foreach (PokemonId pokemon in Enum.GetValues(typeof(PokemonId)))
-                {
-                    if (pokemon.ToString() != "Missingno")
-                    {
-                        GUI.gerEng[StringUtils.getPokemonNameGer(pokemon)] = pokemon.ToString();
-                    }
-                }
                 int i = 0;
                 if (File.Exists(account))
                 {
@@ -141,7 +149,7 @@ namespace PokemonGo.RocketAPI.Console
                                     Globals.useluckyegg = bool.Parse(line);
                                     break;
                                 case 18:
-                                    Globals.gerNames = bool.Parse(line);
+                                    
                                     break;
                                 case 19:
                                     Globals.useincense = bool.Parse(line);
@@ -243,10 +251,7 @@ namespace PokemonGo.RocketAPI.Console
                     foreach (string line in lines)
                     {
                         if (line != string.Empty)
-                            if (Globals.gerNames)
-                                Globals.noTransfer.Add((PokemonId)Enum.Parse(typeof(PokemonId), GUI.gerEng[line]));
-                            else
-                                Globals.noTransfer.Add((PokemonId)Enum.Parse(typeof(PokemonId), line));
+                            Globals.noTransfer.Add((PokemonId)Enum.Parse(typeof(PokemonId), line));
                     }
                 }
 
@@ -256,10 +261,7 @@ namespace PokemonGo.RocketAPI.Console
                     foreach (string line in lines)
                     {
                         if (line != string.Empty)
-                            if (Globals.gerNames)
-                                Globals.noCatch.Add((PokemonId)Enum.Parse(typeof(PokemonId), GUI.gerEng[line]));
-                            else
-                                Globals.noCatch.Add((PokemonId)Enum.Parse(typeof(PokemonId), line));
+                            Globals.noCatch.Add((PokemonId)Enum.Parse(typeof(PokemonId), line));
                     }
                 }
 
@@ -269,10 +271,7 @@ namespace PokemonGo.RocketAPI.Console
                     foreach (string line in lines)
                     {
                         if (line != string.Empty)
-                            if (Globals.gerNames)
-                                Globals.doEvolve.Add((PokemonId)Enum.Parse(typeof(PokemonId), GUI.gerEng[line]));
-                            else
-                                Globals.doEvolve.Add((PokemonId)Enum.Parse(typeof(PokemonId), line));
+                            Globals.doEvolve.Add((PokemonId)Enum.Parse(typeof(PokemonId), line));
                     }
                 }
 
@@ -293,11 +292,6 @@ namespace PokemonGo.RocketAPI.Console
                 }
             }
 
-            if(!File.Exists(miscSettings))
-            {
-                var f = File.Create(miscSettings);
-                f.Close();
-            }
 
             Logger.SetLogger(new Logging.ConsoleLogger(LogLevel.Info));
 
@@ -460,7 +454,6 @@ namespace PokemonGo.RocketAPI.Console
         public static bool useincense = true;
         public static bool userazzberry = true;
         public static double razzberry_chance = 0.35;
-        public static bool gerNames = false;
         public static bool pokeList = true;
         public static bool keepPokemonsThatCanEvolve = true;
         public static bool TransferFirstLowIV = true;
