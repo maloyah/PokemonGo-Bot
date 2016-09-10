@@ -3,6 +3,7 @@ using POGOProtos.Inventory.Item;
 using PokemonGo.RocketAPI.Enums;
 using System;
 using System.Collections.Generic;
+using System.Device.Location;
 
 namespace PokemonGo.RocketAPI.Console
 {
@@ -62,6 +63,10 @@ namespace PokemonGo.RocketAPI.Console
         public bool MapLoaded => Globals.MapLoaded;
 
         public string SelectedLanguage => Globals.settingsLanguage;
+
+        
+
+       // public bool _pauseTheWalking => Globals._pauseTheWalking;
         /*
                  string UseProxyHost { get; set; }
                 int UseProxyPort { get; set; }
@@ -335,6 +340,12 @@ namespace PokemonGo.RocketAPI.Console
             get { return Globals.UseBreakFields; }
             set { Globals.UseBreakFields = value; }
         }
+
+        bool ISettings.pauseAtEvolve2
+        {
+            get { return Globals.pauseAtEvolve2; }
+            set { Globals.pauseAtEvolve2 = value; }
+        }
         bool ISettings.Espiral
         {
             get
@@ -358,6 +369,87 @@ namespace PokemonGo.RocketAPI.Console
             set
             {
                 Globals.logPokemons = value;
+            }
+        }
+
+        bool ISettings.logManualTransfer
+        {
+            get
+            {
+                return Globals.logManualTransfer;
+            }
+
+            set
+            {
+                Globals.logManualTransfer = value;
+            }
+        }
+
+        bool ISettings.bLogEvolve
+        {
+            get
+            {
+                return Globals.bLogEvolve;
+            }
+
+            set
+            {
+                Globals.bLogEvolve = value;
+            }
+        }
+        
+        public LinkedList<GeoCoordinate> NextDestinationOverride
+
+        {
+            get { return Globals.NextDestinationOverride; }
+            set { Globals.NextDestinationOverride = value; }
+        }
+        public LinkedList<GeoCoordinate> RouteToRepeat
+        {
+            get { return Globals.RouteToRepeat; }
+            set { Globals.RouteToRepeat = value; }
+        }
+        public bool RepeatUserRoute
+        {
+            get { return Globals.RepeatUserRoute; }
+            set { Globals.RepeatUserRoute = value; }
+        }
+        public bool UseLureGUIClick
+        {
+            get { return Globals.UseLureGUIClick; }
+            set { Globals.UseLureGUIClick = value; }
+        }
+        public bool UseLuckyEggGUIClick
+        {
+            get { return Globals.UseLuckyEggGUIClick; }
+            set { Globals.UseLuckyEggGUIClick = value; }
+        }
+        public bool UseIncenseGUIClick
+        {
+            get { return Globals.UseIncenseGUIClick; }
+            set { Globals.UseIncenseGUIClick = value; }
+        }
+
+        /*bool ISettings._pauseTheWalking
+        {
+            get { return Globals._pauseTheWalking; }
+            set { Globals._pauseTheWalking = value; }
+        }*/
+            
+
+        bool ISettings.pauseTheWalking
+        {
+            get
+            {
+                return  Globals._pauseTheWalking;
+            }
+            set
+            {
+                if (Logic.Logic._instance != null)
+                {
+                    Logic.Logic._instance.pauseWalking = value;
+                    Globals._pauseTheWalking = value;
+                }
             }
         }
     }

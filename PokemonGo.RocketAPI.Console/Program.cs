@@ -11,6 +11,7 @@ using System.IO;
 using PokemonGo.RocketAPI.Console.Helper;
 using PokemonGo.RocketAPI.Logic.Utils;
 using POGOProtos.Enums;
+using System.Device.Location;
 
 namespace PokemonGo.RocketAPI.Console
 {
@@ -29,14 +30,22 @@ namespace PokemonGo.RocketAPI.Console
         public static string huntstats = Path.Combine(path, "HuntStats.txt");
         public static string miscSettings = Path.Combine(path, "misc.txt");
         public static string deviceSettings = Path.Combine(path_device, "DeviceInfo.txt");
+        public static string updateSettings = Path.Combine(path, "update.txt");
         public static string cmdCoords = string.Empty;
 
         static string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-        public static string pokelog = Path.Combine(logPath, "pokelog.txt");
+        public static string pokelog = Path.Combine(logPath, "PokeLog.txt");
+        public static string manualTransferLog = Path.Combine(logPath, "TransferLog.txt");
+        public static string EvolveLog = Path.Combine(logPath, "EvolveLog.txt");
+
+        public static string path_pokedata = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "PokeData");
 
         [STAThread]
         static void Main(string[] args)
         {
+
+
+
             SleepHelper.PreventSleep();
             if (args != null && args.Length > 0)
             {
@@ -65,6 +74,16 @@ namespace PokemonGo.RocketAPI.Console
             if (!File.Exists(pokelog))
             {
                 File.Create(pokelog).Close();
+            }
+
+            if(!File.Exists(manualTransferLog))
+            {
+                File.Create(manualTransferLog).Close();
+            }
+
+            if(!File.Exists(EvolveLog))
+            {
+                File.Create(EvolveLog).Close();
             }
 
             if (args != null && args.Length > 0 && args[0].Contains("-nogui"))
@@ -164,7 +183,7 @@ namespace PokemonGo.RocketAPI.Console
                                     Globals.keepPokemonsThatCanEvolve = bool.Parse(line);
                                     break;
                                 case 23:
-                                    Globals.pokevision = bool.Parse(line);
+                                    //Globals.pokevision = bool.Parse(line);
                                     break;
                                 case 24:
                                     Globals.useluckyegg = bool.Parse(line);
@@ -426,6 +445,24 @@ namespace PokemonGo.RocketAPI.Console
         public static int toprevive = 50;
         public static int berry = 50;
         public static int ivmaxpercent = 0;
+        public static bool _pauseTheWalking = false;
+        private static bool _pauseAtWalking = false;
+        public static bool pauseAtWalking
+        {
+            get
+            {
+                return _pauseAtWalking;
+            }
+            set
+            {
+                if(Logic.Logic._instance != null)
+                {
+                    Logic.Logic._instance.pauseWalking = value;
+                    _pauseAtWalking = value;
+                }
+            }
+        }
+
         public static List<PokemonId> noTransfer = new List<PokemonId>();
         public static List<PokemonId> noCatch = new List<PokemonId>();
         public static List<PokemonId> doEvolve = new List<PokemonId>();
@@ -475,5 +512,26 @@ namespace PokemonGo.RocketAPI.Console
         public static bool MapLoaded = false;
 
         public static bool logPokemons = false;
+
+        public static LinkedList<GeoCoordinate> NextDestinationOverride = new LinkedList<GeoCoordinate>();
+
+        public static LinkedList<GeoCoordinate> RouteToRepeat = new LinkedList<GeoCoordinate>();
+
+        public static bool RepeatUserRoute = false;
+
+        public static bool logManualTransfer = false;
+
+
+        public static bool UseLureGUIClick = false;
+
+        public static bool UseLuckyEggGUIClick = false;
+
+        public static bool UseIncenseGUIClick = false;
+        public static bool bLogEvolve = false;
+
+        public static bool pauseAtEvolve = false;
+        public static bool pauseAtEvolve2 = false;
+
+        public static bool AutoUpdate = false;
     }
 }
