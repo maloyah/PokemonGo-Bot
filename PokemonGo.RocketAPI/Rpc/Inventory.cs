@@ -575,5 +575,6 @@ namespace PokemonGo.RocketAPI.Rpc
                 }
             }
         }
+                
     }
 }
