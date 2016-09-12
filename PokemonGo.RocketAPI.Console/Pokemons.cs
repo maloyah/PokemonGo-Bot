@@ -328,7 +328,7 @@ namespace PokemonGo.RocketAPI.Console
         /// <returns></returns>
         private static Bitmap getPokemonImagefromResource(PokemonId pokemon, string size)
         {
-             var resource = PokemonGo.RocketAPI.Console.Properties.Resources.ResourceManager.GetObject("_"+(int)pokemon+"_"+size, CultureInfo.CurrentCulture);
+            var resource = PokemonGo.RocketAPI.Console.Properties.Resources.ResourceManager.GetObject("_"+(int)pokemon+"_"+size, CultureInfo.CurrentCulture);
             if (resource != null && resource is Bitmap)
             {
                 return new Bitmap(resource as Bitmap);
@@ -1072,7 +1072,7 @@ namespace PokemonGo.RocketAPI.Console
 
         private void btnShowMap_Click(object sender, EventArgs e)
         {
-            new LocationSelect(true).Show();
+        	new LocationSelect(true, (int)profile.PlayerData.Team).Show();
         }
 
         private void lang_en_btn2_Click(object sender, EventArgs e)
