@@ -533,13 +533,22 @@ namespace PokemonGo.RocketAPI.Logic
                 if (pokeStops.Count() == 0)
                 {
                     Logger.ColoredConsoleWrite(ConsoleColor.Red, "We can't find any PokeStops in a range of " + _clientSettings.MaxWalkingRadiusInMeters + "m!");
-                    await ExecuteCatchAllNearbyPokemons();
+                    for(int i = 0; i < 10; i++) {
+                        Logger.ColoredConsoleWrite(ConsoleColor.Red, "§ì " + i.ToString() + " ¦¸!");
+                        await RandomHelper.RandomDelay(3000, 7000);
+                        await ExecuteCatchAllNearbyPokemons();
+                    }
                 }
             }
             if (pokeStops.Count() == 0)
             {
                 Logger.ColoredConsoleWrite(ConsoleColor.Red, "We can't find any PokeStops, which are unused! Probably the server are unstable, or you visted them all. Retrying..");
-                await ExecuteCatchAllNearbyPokemons();
+                for (int i = 0; i < 10; i++)
+                {
+                    Logger.ColoredConsoleWrite(ConsoleColor.Red, "§ì " + i.ToString() + " ¦¸!");
+                    await RandomHelper.RandomDelay(3000, 7000);
+                    await ExecuteCatchAllNearbyPokemons();
+                }
             }
             else
             {
