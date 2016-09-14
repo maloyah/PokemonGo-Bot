@@ -417,7 +417,7 @@ namespace PokemonGo.RocketAPI.Logic
                         Logger.ColoredConsoleWrite(ConsoleColor.Red, "Time To Run Reached or Exceeded...Walking back to default location and stopping bot");
                         if (_clientSettings.UseGoogleMapsAPI)
                         {
-                            await WalkWithRouting(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, _clientSettings.WalkingSpeedInKilometerPerHour);
+                            await WalkWithRouting(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
                         }
                         else
                         {
@@ -497,7 +497,7 @@ namespace PokemonGo.RocketAPI.Logic
                     Logger.ColoredConsoleWrite(ConsoleColor.Green, "Pokemon Catch Limit Reached and not farming pokestops - Bot will return to default location and stop");
                     if (_clientSettings.UseGoogleMapsAPI)
                     {
-                        await WalkWithRouting(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, _clientSettings.WalkingSpeedInKilometerPerHour);
+                        await WalkWithRouting(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
                     }
                     else
                     {
@@ -521,7 +521,7 @@ namespace PokemonGo.RocketAPI.Logic
                     Logger.ColoredConsoleWrite(ConsoleColor.Green, "Pokestop Farmed Limit Reached and not catching pokemon - Bot will return to default location and stop");
                     if (_clientSettings.UseGoogleMapsAPI)
                     {
-                        await WalkWithRouting(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, _clientSettings.WalkingSpeedInKilometerPerHour);
+                        await WalkWithRouting(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
                     }
                     else
                     {
@@ -538,7 +538,7 @@ namespace PokemonGo.RocketAPI.Logic
                 Logger.ColoredConsoleWrite(ConsoleColor.Green, "XP Farmed Limit Reached - Bot will return to default location and stop");
                 if (_clientSettings.UseGoogleMapsAPI)
                 {
-                    await WalkWithRouting(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, _clientSettings.WalkingSpeedInKilometerPerHour);
+                    await WalkWithRouting(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
                 }
                 else
                 {
@@ -673,12 +673,6 @@ namespace PokemonGo.RocketAPI.Logic
             }
             #endregion
 
-            // Walk Spiral if enabled
-            if (_clientSettings.Espiral)
-            {
-                await Espiral(client, pokeStops);
-                return;
-            }
             gymsloaded = false;
             var pokeGyms =
             _navigation.pathByNearestNeighbour(
@@ -694,7 +688,12 @@ namespace PokemonGo.RocketAPI.Logic
                 _infoObservable.PushAvailablePokeGymsLocations(pokeGyms);
                 gymsloaded = true;
             }
-
+            // Walk Spiral if enabled
+            if (_clientSettings.Espiral)
+            {
+                await Espiral(client, pokeStops);
+                return;
+            }
             //Normal Walk and Catch between pokestops
             await fncPokeStop(_client, pokeStops, false);
         }
@@ -736,8 +735,9 @@ namespace PokemonGo.RocketAPI.Logic
                 //refresh distance from start with currernt user position
                 distanceFromStart = LocationUtils.CalculateDistanceInMeters(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, _client.CurrentLatitude, _client.CurrentLongitude);
                 //walk back to default location if outside of defined radius
-                if (_clientSettings.MaxWalkingRadiusInMeters != 0 && distanceFromStart > _clientSettings.MaxWalkingRadiusInMeters)
+                if ((_clientSettings.MaxWalkingRadiusInMeters != 0 && distanceFromStart > _clientSettings.MaxWalkingRadiusInMeters) || _clientSettings.RelocateDefaultLocation)
                 {
+<<<<<<< HEAD
                     Logger.ColoredConsoleWrite(ConsoleColor.Green, "You're outside of the defined max. walking radius. Walking back! 才不要");
                     if (_clientSettings.UseGoogleMapsAPI)
                     {
@@ -746,6 +746,36 @@ namespace PokemonGo.RocketAPI.Logic
                     else
                     {
                         //var walkHome = await _navigation.HumanLikeWalking(new GeoCoordinate(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude), _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
+=======
+                    var walkingspeed = _clientSettings.WalkingSpeedInKilometerPerHour;
+                    if (_clientSettings.RelocateDefaultLocation)
+                    {
+                        if (_clientSettings.RelocateDefaultLocationTravelSpeed > 0)
+                            walkingspeed = _clientSettings.RelocateDefaultLocationTravelSpeed;
+                        Logger.ColoredConsoleWrite(ConsoleColor.Green, "Relocating to new Default Location! Travelling at " + walkingspeed + "km/h");
+                        _clientSettings.RelocateDefaultLocation = false;
+                        if (_clientSettings.UseGoogleMapsAPI)
+                        {
+                            await WalkWithRouting(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, walkingspeed, ExecuteCatchandFarm);
+                        }
+                        else
+                        {
+                            var walkHome = await _navigation.HumanLikeWalking(new GeoCoordinate(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude), walkingspeed, ExecuteCatchandFarm);
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        Logger.ColoredConsoleWrite(ConsoleColor.Green, "You're outside of the defined max. walking radius. Walking back!");
+                    }
+                    if (_clientSettings.UseGoogleMapsAPI)
+                    {
+                        await WalkWithRouting(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude, walkingspeed, ExecuteCatchandFarm);
+                    }
+                    else
+                    {
+                        var walkHome = await _navigation.HumanLikeWalking(new GeoCoordinate(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude), walkingspeed, ExecuteCatchandFarm);
+>>>>>>> master
                     }
                 }
                 #endregion
@@ -786,11 +816,8 @@ namespace PokemonGo.RocketAPI.Logic
                     Logger.ColoredConsoleWrite(ConsoleColor.Magenta, "Active Lure at next Pokestop - Pausing walk for " + Math.Round(timeRemaining / 60 / 1000, 2) + " Minutes");
                     _clientSettings.pauseAtPokeStop = true;
                 }
-<<<<<<< HEAD
-                _infoObservable.PushNewShopGeoLocations(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude));
-=======
                 #endregion
->>>>>>> master
+                _infoObservable.PushNewShopGeoLocations(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude));
 
                 Logger.ColoredConsoleWrite(ConsoleColor.Green, $"Next Pokestop: {fortInfo.Name} in {distance:0.##}m distance.");
 
@@ -839,14 +866,10 @@ namespace PokemonGo.RocketAPI.Logic
                         Logger.ColoredConsoleWrite(ConsoleColor.DarkRed, "ignore this: Error in fncPokeStop: " + e.ToString());
                     }
                 }
-<<<<<<< HEAD
-                Logger.ColoredConsoleWrite(ConsoleColor.Green, $"我走到了!!! Pokestop: {fortInfo.Name} , Id:{pokeStop.Id}");
-=======
                 #endregion
-
+				Logger.ColoredConsoleWrite(ConsoleColor.Green, $"我走到了!!! Pokestop: {fortInfo.Name} , Id:{pokeStop.Id}");
                 #region Farm Pokestop and continue walk or catch pokemon and continue farming nearby pokestops on break
-                // flag to indicate whether bot has added lure if lure on break enabled
->>>>>>> master
+                // flag to indicate whether bot has added lure if lure on break enabled                var addedlure = false;
                 var addedlure = false;
                 if (_clientSettings.pauseAtPokeStop)
                 {
@@ -857,30 +880,8 @@ namespace PokemonGo.RocketAPI.Logic
                     {
                         foreach (var Pokestop in pokestopsWithinRangeStanding)
                         {
-<<<<<<< HEAD
-                            await UseIncense();
                             await ExecuteCatchAllNearbyPokemons();
-                            // Catch Pokemon Lure
-                            if (_clientSettings.CatchLurePokemons && Pokestop.ActiveFortModifier.Count > 0)
-                            {
-                                var lure_Pokemon = pokeStop.LureInfo.ActivePokemonId;
-=======
-                            await ExecuteCatchAllNearbyPokemons();
-                            // Catch Pokemon Lure
-                            if (_clientSettings.CatchPokemon && Pokestop.ActiveFortModifier.Count > 0)
-                            {
-                                var lure_Pokemon = Pokestop.LureInfo.ActivePokemonId;
->>>>>>> master
-                                if (!_clientSettings.catchPokemonSkipList.Contains(lure_Pokemon))
-                                {
-                                    await catchPokemon(Pokestop.LureInfo.EncounterId, Pokestop.LureInfo.FortId, Pokestop.LureInfo.ActivePokemonId);
-                                }
-                                else
-                                {
-                                    Logger.ColoredConsoleWrite(ConsoleColor.Green, "Skipped Lure Pokemon: " + pokeStop.LureInfo.ActivePokemonId);
-                                }
-                            }
-                            /////////////////////
+
                             var FortInfo = await _client.Fort.GetFort(Pokestop.Id, Pokestop.Latitude, Pokestop.Longitude);
                             if ((_clientSettings.UseLureAtBreak || _clientSettings.UseLureGUIClick) && havelures && !pokeStop.ActiveFortModifier.Any() && !addedlure)
                             {
@@ -943,7 +944,7 @@ namespace PokemonGo.RocketAPI.Logic
                     Logger.ColoredConsoleWrite(ConsoleColor.Yellow, $"Path Override detected! Rerouting to user-selected pokeStop...");
                     if (_clientSettings.UseGoogleMapsAPI)
                     {
-                        await WalkWithRouting(targetPokeStop.Latitude, targetPokeStop.Longitude, walkspeed);
+                        await WalkWithRouting(targetPokeStop.Latitude, targetPokeStop.Longitude, walkspeed, ExecuteCatchAllNearbyPokemons);
                     }
                     else
                     {
@@ -962,15 +963,15 @@ namespace PokemonGo.RocketAPI.Logic
 
         private async Task WalkWithRouting(FortData pokeStop, double walkspeed)
         {
-            await DoRouteWalking(pokeStop.Latitude, pokeStop.Longitude, walkspeed);
+            await DoRouteWalking(pokeStop.Latitude, pokeStop.Longitude, walkspeed, ExecuteCatchAllNearbyPokemons);
         }
 
-        private async Task WalkWithRouting(double latitude, double longitude, double walkspeed)
+        private async Task WalkWithRouting(double latitude, double longitude, double walkspeed, Func<Task> task)
         {
-            await DoRouteWalking(latitude, longitude, walkspeed);
+            await DoRouteWalking(latitude, longitude, walkspeed, task);
         }
 
-        private async Task DoRouteWalking(double latitude, double longitude, double walkspeed)
+        private async Task DoRouteWalking(double latitude, double longitude, double walkspeed, Func<Task> task)
         {
             Logger.ColoredConsoleWrite(ConsoleColor.Yellow, $"Getting Google Maps Routing");
             if (_clientSettings.GoogleMapsAPIKey != null)
@@ -987,22 +988,20 @@ namespace PokemonGo.RocketAPI.Logic
                 DirectionsRequest directionsRequest = new DirectionsRequest();
                 directionsRequest.ApiKey = _clientSettings.GoogleMapsAPIKey;
                 directionsRequest.TravelMode = TravelMode.Walking;
-<<<<<<< HEAD
                 directionsRequest.Origin = _client.CurrentLatitude + "," + _client.CurrentLongitude;
                 directionsRequest.Destination = latitude + "," + longitude;
                 directionsRequest.Language = "zh-TW";
-=======
 
                 #region Set Directions Request Variables based on client settings
-                if (_clientSettings.WalkingSpeedInKilometerPerHour > 10 && _clientSettings.WalkingSpeedInKilometerPerHour < 20)
+                if (walkspeed > 10 && walkspeed < 20)
                 {
                     directionsRequest.TravelMode = TravelMode.Bicycling;
                     Logger.ColoredConsoleWrite(ConsoleColor.Yellow, $"Using Directions For Bicycling due to max speed setting > 10km/h");
                 }
-                if (_clientSettings.WalkingSpeedInKilometerPerHour > 20)
+                if (walkspeed > 20)
                 {
                     directionsRequest.TravelMode = TravelMode.Bicycling;
-                    Logger.ColoredConsoleWrite(ConsoleColor.Yellow, $"Using Directions For Driving due to max speed setting > 20km/h");                
+                    Logger.ColoredConsoleWrite(ConsoleColor.Yellow, $"Using Directions For Driving due to max speed setting > 20km/h");
                 }
 
                 if (_clientSettings.SelectedLanguage == "de")
@@ -1017,12 +1016,11 @@ namespace PokemonGo.RocketAPI.Logic
                     directionsRequest.Language = "ru";
                 if (_clientSettings.SelectedLanguage == "france")
                     directionsRequest.Language = "fr";
-                    #endregion
+                #endregion
 
                 directionsRequest.Origin = sourcelatstring + "," + sourcelongstring;
                 directionsRequest.Destination = latstring + "," + longstring;
                 //get response
->>>>>>> master
                 DirectionsResponse directions = GoogleMaps.Directions.Query(directionsRequest);
                 //process Google Directions response
                 if (directions.Status == DirectionsStatusCodes.OK)
@@ -1033,9 +1031,15 @@ namespace PokemonGo.RocketAPI.Logic
                     {
                         var directiontext = Helpers.Utils.HtmlRemoval.StripTagsRegexCompiled(step.HtmlInstructions);
                         Logger.ColoredConsoleWrite(ConsoleColor.Green, directiontext);
+                        var lastpoint = new Location(_client.CurrentLatitude, _client.CurrentLongitude);
                         foreach (var point in step.PolyLine.Points)
                         {
-                            var update = await _navigation.HumanLikeWalking(new GeoCoordinate(step.EndLocation.Latitude, step.EndLocation.Longitude), walkspeed, ExecuteCatchAllNearbyPokemons, true, false);
+                            var distanceDelta = LocationUtils.CalculateDistanceInMeters(new GeoCoordinate(point.Latitude, point.Longitude), new GeoCoordinate(lastpoint.Latitude, lastpoint.Longitude));
+                            if (distanceDelta > 10)
+                            {
+                                var update = await _navigation.HumanLikeWalking(new GeoCoordinate(point.Latitude, point.Longitude), walkspeed, task, true, false);
+                            }
+                            lastpoint = point;
                         }
                         stepcount++;
                         if (stepcount == steps.Count())
@@ -1154,14 +1158,9 @@ namespace PokemonGo.RocketAPI.Logic
                     pokeStopInfo += $"{fortSearch.ExperienceAwarded} XP{Environment.NewLine}{fortSearch.GemsAwarded}{Environment.NewLine}{egg}{Environment.NewLine}{items.Replace(",", Environment.NewLine)}";
 
                     // Catch Pokemon Lure
-<<<<<<< HEAD
-                    if (_clientSettings.CatchLurePokemons && pokeStop.ActiveFortModifier.Count > 0)
-                    {
-=======
                     if (pokeStop.LureInfo != null && _clientSettings.CatchPokemon && pokeStop.ActiveFortModifier.Count > 0)
                     {
-                        
->>>>>>> master
+
                         var lure_Pokemon = pokeStop.LureInfo.ActivePokemonId;
                         if (!_clientSettings.catchPokemonSkipList.Contains(lure_Pokemon))
                         {
@@ -1195,6 +1194,56 @@ namespace PokemonGo.RocketAPI.Logic
                 Logger.ColoredConsoleWrite(ConsoleColor.Green, "Pokestop not ready to farm again, skipping and only looking for pokemon");
                 return false;
             }
+        }
+
+        private async Task ExecuteCatchandFarm()
+        {
+            //Get nearby pokestops
+            var mapObjects = await _client.Map.GetMapObjects();
+            //Indicate whether we have loaded the stops in location gui yet 
+            stopsloaded = false;
+            //narrow map data to pokestops within walking distance
+            var pokeStops =
+            _navigation.pathByNearestNeighbour(
+            mapObjects.Item1.MapCells.SelectMany(i => i.Forts)
+            .Where(
+                i =>
+                i.Type == FortType.Checkpoint &&
+                i.CooldownCompleteTimestampMs < (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds)
+                .OrderBy(
+                i =>
+                LocationUtils.CalculateDistanceInMeters(_client.CurrentLatitude, _client.CurrentLongitude, i.Latitude, i.Longitude)).ToArray(), _clientSettings.WalkingSpeedInKilometerPerHour);
+
+            var pokestopsWithinRangeStanding = pokeStops.Where(i => (LocationUtils.CalculateDistanceInMeters(_client.CurrentLatitude, _client.CurrentLongitude, i.Latitude, i.Longitude)) < 40);
+            if (pokestopsWithinRangeStanding.Count() > 0)
+            {
+                Logger.ColoredConsoleWrite(ConsoleColor.Green, $"{pokestopsWithinRangeStanding.Count().ToString()} Pokestops within range of user");
+
+                foreach (var Pokestop in pokestopsWithinRangeStanding)
+                {
+                    // Catch Pokemon Lure
+                    if (_clientSettings.CatchPokemon && Pokestop.ActiveFortModifier.Count > 0)
+                    {
+                        var lure_Pokemon = Pokestop.LureInfo.ActivePokemonId;
+                        if (!_clientSettings.catchPokemonSkipList.Contains(lure_Pokemon))
+                        {
+                            await catchPokemon(Pokestop.LureInfo.EncounterId, Pokestop.LureInfo.FortId, Pokestop.LureInfo.ActivePokemonId);
+                        }
+                        else
+                        {
+                            Logger.ColoredConsoleWrite(ConsoleColor.Green, "Skipped Lure Pokemon: " + Pokestop.LureInfo.ActivePokemonId);
+                        }
+                    }
+                    /////////////////////
+                    var FortInfo = await _client.Fort.GetFort(Pokestop.Id, Pokestop.Latitude, Pokestop.Longitude);
+
+                    var farmed = await CheckAndFarmNearbyPokeStop(Pokestop, _client, FortInfo);
+                    if (farmed) { Pokestop.CooldownCompleteTimestampMs = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds + 300500; }
+                    await SetCheckTimeToRun();
+                    await RandomHelper.RandomDelay(500, 600); // wait for a bit before repeating farm cycle to avoid spamming 
+                }
+            }
+            await ExecuteCatchAllNearbyPokemons();
         }
 
         private async Task ExecuteCatchAllNearbyPokemons()
@@ -1424,192 +1473,8 @@ namespace PokemonGo.RocketAPI.Logic
                         Logger.ColoredConsoleWrite(ConsoleColor.Red, $"Soft Ban Detected - Stopping Bot to prevent perma-ban. Try again in 4-24 hours and be more careful next time!");
                         StringUtils.CheckKillSwitch(true);
                     }
-<<<<<<< HEAD
-
-                    var distance = LocationUtils.CalculateDistanceInMeters(_client.CurrentLatitude, _client.CurrentLongitude, pokemon.Latitude, pokemon.Longitude);
-                    await Task.Delay(distance > 100 ? 1000 : 100);
-
-                    // Do Catch here
-                    await catchPokemon(pokemon.EncounterId, pokemon.SpawnPointId, pokemon.PokemonId, pokemon.Longitude, pokemon.Latitude);
                 }
             }
-        }
-        private async Task catchPokemon(ulong encounter_id, string spawnpoint_id, PokemonId pokeid, double poke_long = 0, double poke_lat = 0)
-        {
-            var missCount = 0;
-            var forceHit = false; 
-            var encounterPokemonResponse = await _client.Encounter.EncounterPokemon(encounter_id, spawnpoint_id);
-            
-            if (encounterPokemonResponse.Status == EncounterResponse.Types.Status.EncounterSuccess)
-            {
-                var bestPokeball = await GetBestBall(encounterPokemonResponse?.WildPokemon, false);
-                if (bestPokeball == ItemId.ItemUnknown)
-                {
-                    Logger.ColoredConsoleWrite(ConsoleColor.Red, $"No Pokeballs! - missed {pokeid} CP {encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp} IV {PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00")}%");
-                    Logger.ColoredConsoleWrite(ConsoleColor.Red, $"Detected all balls out of stock - disabling pokemon catch until recycle limit of at least 1 ball type is reached");
-                    pokeballoutofstock = true;
-                    _clientSettings.CatchPokemon = false;
-                    return;
-                }
-                var inventoryBerries = await _client.Inventory.GetItems();
-                var probability = encounterPokemonResponse?.CaptureProbability?.CaptureProbability_?.FirstOrDefault();
-                CatchPokemonResponse caughtPokemonResponse;
-                bool escaped = false;
-                bool berryThrown = false;
-                bool berryOutOfStock = false;
-                Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"Encountered {StringUtils.getPokemonNameByLanguage(_clientSettings, pokeid)} CP {encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp} IV {PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00")}% Probability {Math.Round(probability.Value * 100)}%");
-                bool used = false;
-                do
-                {
-                    if (((probability.HasValue && probability.Value < _clientSettings.razzberry_chance) || escaped) && _clientSettings.UseRazzBerry && !used)
-                    {
-                        var bestBerry = await GetBestBerry(encounterPokemonResponse?.WildPokemon);
-                        if (bestBerry != ItemId.ItemUnknown)
-                        {
-                            var berries = inventoryBerries.Where(p => (ItemId)p.ItemId == bestBerry).FirstOrDefault();
-                            if (berries.Count <= 0) berryOutOfStock = true;
-                            if (!berryOutOfStock)
-                            {
-                                //Throw berry
-                                var useRaspberry = await _client.Encounter.UseCaptureItem(encounter_id, bestBerry, spawnpoint_id);
-                                berryThrown = true;
-                                used = true;
-                                Logger.ColoredConsoleWrite(ConsoleColor.Green, $"Thrown {bestBerry}. Remaining: {berries.Count}.", LogLevel.Info);
-                                await RandomHelper.RandomDelay(50, 200);
-                            }
-                            else
-                            {
-                                berryThrown = true;
-                                escaped = true;
-                                used = true;
-                            }
-                        }
-                        else
-                        {
-                            berryThrown = true;
-                            escaped = true;
-                            used = true;
-                        }
-                    }
-                    // limit number of balls wasted by misses and log for UX because fools be tripin
-                    //TODO eventually make the max miss count client configurable;
-                    Random r = new Random();
-                    switch (missCount)
-                    {
-                        case 0:
-                            if (bestPokeball == ItemId.ItemMasterBall)
-                            {
-                                Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"No messing around with your Master Balls! Forcing a hit on target.");
-                                forceHit = true;
-                            }
-                            break;
-                        case 1:
-                            if (bestPokeball == ItemId.ItemUltraBall)
-                            {
-                                Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"Not wasting more of your Ultra Balls! Forcing a hit on target.");
-                                forceHit = true;
-                            }
-                            break;
-                        case 2:
-                            //adding another chance of forcing hit here to improve overall odds after 2 misses                                
-                            int rInt = r.Next(0, 2);
-                            if (rInt == 1)
-                            {
-                                // lets hit
-                                forceHit = true;
-                            }
-                            break;
-                        default:
-                            // default to force hit after 3 wasted balls of any kind.
-                            Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"Enough misses! Forcing a hit on target.");
-                            forceHit = true;
-                            break;
-                    }
-                    if (missCount > 0)
-                    {
-                        //adding another chance of forcing hit here to improve overall odds after 1st miss                            
-                        int rInt = r.Next(0, 3);
-                        if (rInt == 1)
-                        {
-                            // lets hit
-                            forceHit = true;
-                        }
-                    }
-                    caughtPokemonResponse = await CatchPokemonWithRandomVariables(encounter_id, spawnpoint_id, bestPokeball, forceHit);
-                    if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed)
-                    {
-                        Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"Missed {StringUtils.getPokemonNameByLanguage(_clientSettings, pokeid)} while using {bestPokeball}");
-                        missCount++;
-                        await RandomHelper.RandomDelay(1500, 6000);
-                    }
-                    else if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape)
-                    {
-                        Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"{StringUtils.getPokemonNameByLanguage(_clientSettings, pokeid)} escaped while using {bestPokeball}");
-                        escaped = true;
-                        //reset forceHit in case we randomly triggered on last throw.
-                        forceHit = false;
-                        if (berryThrown) bestPokeball = await GetBestBall(encounterPokemonResponse?.WildPokemon, true);
-                        await RandomHelper.RandomDelay(1500, 6000);
-                    }
-                }
-                while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed || caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
-
-                if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess)
-                {
-                    foreach (int xp in caughtPokemonResponse.CaptureAward.Xp)
-                        _botStats.AddExperience(xp);
-
-                    DateTime curDate = DateTime.Now;
-                    _infoObservable.PushNewHuntStats(String.Format("{0}/{1};{2};{3};{4}", poke_lat, poke_long, pokeid, curDate.Ticks, curDate.ToString()) + Environment.NewLine);
-
-                    string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
-                    string logs = System.IO.Path.Combine(logPath, "PokeLog.txt");
-                    var date = DateTime.Now;
-                    if (caughtPokemonResponse.CaptureAward.Xp.Sum() >= 500)
-                    {
-                        if (_clientSettings.logPokemons == true)
-                        {
-                            File.AppendAllText(logs, $"[{date}] Caught new {StringUtils.getPokemonNameByLanguage(_clientSettings, pokeid)} (CP: {encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp} | IV: {PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00")}% | Pokeball used: {bestPokeball} | XP: {caughtPokemonResponse.CaptureAward.Xp.Sum()}) " + Environment.NewLine);
-                        }
-                        Logger.ColoredConsoleWrite(ConsoleColor.White,
-                            $"Caught New {StringUtils.getPokemonNameByLanguage(_clientSettings, pokeid)} CP {encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp} IV {PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00")}% using {bestPokeball} got {caughtPokemonResponse.CaptureAward.Xp.Sum()} XP.");
-                        pokemonCatchCount++;
-
-                    }
-                    else
-                    {
-                        if (_clientSettings.logPokemons == true)
-                        {
-                            File.AppendAllText(logs, $"[{date}] Caught {StringUtils.getPokemonNameByLanguage(_clientSettings, pokeid)} (CP: {encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp} | IV: {PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00")}% | Pokeball used: {bestPokeball} | XP: {caughtPokemonResponse.CaptureAward.Xp.Sum()}) " + Environment.NewLine);
-                        }
-                        Logger.ColoredConsoleWrite(ConsoleColor.Gray,
-                            $"Caught {StringUtils.getPokemonNameByLanguage(_clientSettings, pokeid)} CP {encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp} IV {PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00")}% using {bestPokeball} got {caughtPokemonResponse.CaptureAward.Xp.Sum()} XP.");
-                        pokemonCatchCount++;
-
-                               
-
-                        if (_telegram != null)
-                            _telegram.sendInformationText(TelegramUtil.TelegramUtilInformationTopics.Catch, StringUtils.getPokemonNameByLanguage(_clientSettings, pokeid), encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp, PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00"), bestPokeball, caughtPokemonResponse.CaptureAward.Xp.Sum());
-
-                        _botStats.AddPokemon(1);
-                        await RandomHelper.RandomDelay(1500, 2000);
-                    }
-                }
-                else
-                {
-                    Logger.ColoredConsoleWrite(ConsoleColor.DarkYellow, $"{StringUtils.getPokemonNameByLanguage(_clientSettings, pokeid)} CP {encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp} IV {PokemonInfo.CalculatePokemonPerfection(encounterPokemonResponse.WildPokemon.PokemonData).ToString("0.00")}% got away while using {bestPokeball}..");
-                    failed_softban++;
-                    if (failed_softban > 10)
-                    {
-                        Logger.ColoredConsoleWrite(ConsoleColor.Red, $"Soft Ban Detected - Stopping Bot to prevent perma-ban. Try again in 4-24 hours and be more careful next time!");
-                        StringUtils.CheckKillSwitch(true);
-                    }
-                }
-            }
-=======
-                }
-            }
->>>>>>> master
             else
             {
                 Logger.ColoredConsoleWrite(ConsoleColor.Red, $"Error catching Pokemon: {encounterPokemonResponse?.Status}");
