@@ -840,6 +840,7 @@ namespace PokemonGo.RocketAPI.Logic
 				Logger.ColoredConsoleWrite(ConsoleColor.Green, $"我走到了!!! Pokestop: {fortInfo.Name} , Id:{pokeStop.Id}");
                 #region Farm Pokestop and continue walk or catch pokemon and continue farming nearby pokestops on break
                 // flag to indicate whether bot has added lure if lure on break enabled                var addedlure = false;
+                var addedlure = false;
                 if (_clientSettings.pauseAtPokeStop)
                 {
                     //check for overlapping pokestops where we are taking a break
