@@ -1490,7 +1490,7 @@ namespace PokemonGo.RocketAPI.Console
         				Globals.ultraball = value;
         			break;
         			case "num_MaxRevives":
-        				Globals.pokeball = value;
+        				Globals.revive = value;
         			break;
         			case "num_MaxPotions":
         				Globals.potion = value;

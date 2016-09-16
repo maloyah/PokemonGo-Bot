@@ -1395,7 +1395,7 @@ namespace PokemonGo.RocketAPI.Logic
                             forceHit = true;
                         }
                     }
-                    caughtPokemonResponse = await CatchPokemonWithRandomVariables(encounter_id, spawnpoint_id, bestPokeball, forceHit);
+                    caughtPokemonResponse = await CatchPokemonWithRandomVariables(encounter_id, spawnpoint_id, bestPokeball, true);
                     if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed)
                     {
                         Logger.ColoredConsoleWrite(ConsoleColor.Magenta, $"Missed {StringUtils.getPokemonNameByLanguage(_clientSettings, pokeid)} while using {bestPokeball}");
@@ -1874,9 +1874,11 @@ namespace PokemonGo.RocketAPI.Logic
                     _clientSettings.CatchPokemon = true;
                     pokeballoutofstock = false;
                 }
-                var transfer = await _client.Inventory.RecycleItem((ItemId)item.ItemId, item.Count);
-                Logger.ColoredConsoleWrite(ConsoleColor.Yellow, $"Recycled {item.Count}x {(ItemId)item.ItemId}", LogLevel.Info);
-                await RandomHelper.RandomDelay(1000, 5000);
+                
+                    var transfer = await _client.Inventory.RecycleItem((ItemId)item.ItemId, item.Count);
+                    Logger.ColoredConsoleWrite(ConsoleColor.Yellow, $"Recycled {item.Count}x {(ItemId)item.ItemId}", LogLevel.Info);
+                    await RandomHelper.RandomDelay(1000, 5000);
+                
             }
         }
 
