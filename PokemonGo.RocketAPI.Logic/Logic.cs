@@ -319,6 +319,9 @@ namespace PokemonGo.RocketAPI.Logic
             Logger.ColoredConsoleWrite(ConsoleColor.Cyan, "Pokemon Catch Count this session: " + pokemonCatchCount);
             Logger.ColoredConsoleWrite(ConsoleColor.Cyan, "PokeStop Farmed Count this session: " + pokeStopFarmedCount);
 
+            if (_telegram != null)
+                _telegram.sendInformationText(TelegramUtil.TelegramUtilInformationTopics.Other, profile.PlayerData.Username + " lvl" + stats.Level + " ,Pokemon Catch: " + pokemonCatchCount + ",PokeStop Farmed: " + pokeStopFarmedCount);
+
             var totalitems = 0;
             foreach (var item in items)
             {

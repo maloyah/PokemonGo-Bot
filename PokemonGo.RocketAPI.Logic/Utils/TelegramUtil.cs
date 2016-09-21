@@ -41,7 +41,8 @@ namespace PokemonGo.RocketAPI.Logic.Utils
             Catch,
             Evolve,
             Transfer,
-            Levelup
+            Levelup,
+            Other
         }
         private Dictionary<TelegramUtilInformationTopics, Boolean> _information = new Dictionary<TelegramUtilInformationTopics, Boolean>();
         private Dictionary<TelegramUtilInformationTopics, String> _informationDescription = new Dictionary<TelegramUtilInformationTopics, String>();
@@ -52,6 +53,7 @@ namespace PokemonGo.RocketAPI.Logic.Utils
             { TelegramUtilInformationTopics.Evolve, @"Notifies you when a pokemon was evolved" },
             { TelegramUtilInformationTopics.Transfer, @"Notifies you when a pokemon is transfered" },
             { TelegramUtilInformationTopics.Levelup, @"Notifies you when you got a level up" },
+            { TelegramUtilInformationTopics.Other, @"Notifies you Other" },
         };
         private Dictionary<TelegramUtilInformationTopics, String> _informationDescriptionIDs = new Dictionary<TelegramUtilInformationTopics, String>() {
             { TelegramUtilInformationTopics.Pokestop, @"telegram_pokestop_description" },
@@ -59,6 +61,7 @@ namespace PokemonGo.RocketAPI.Logic.Utils
             { TelegramUtilInformationTopics.Evolve, @"telegram_evolve_description" },
             { TelegramUtilInformationTopics.Transfer, @"telegram_transfer_description" },
             { TelegramUtilInformationTopics.Levelup, @"telegram_levelup_description" },
+            { TelegramUtilInformationTopics.Other, @"telegram_other_description" },
         };
 
 
@@ -68,6 +71,7 @@ namespace PokemonGo.RocketAPI.Logic.Utils
             { TelegramUtilInformationTopics.Evolve, "Evolved {0} CP {1} {2}%  to {3} CP: {4} for {5}xp" },
             { TelegramUtilInformationTopics.Transfer, "Transfer {0} CP {1} IV {2}% (Best: {3} CP)" },
             { TelegramUtilInformationTopics.Levelup, "You ({0}) got Level Up! Your new Level is now {1}!" },
+            { TelegramUtilInformationTopics.Other, "{0}!" },
         };
 
         public Dictionary<TelegramUtilInformationTopics, String> _informationTopicDefaultTextIDs = new Dictionary<TelegramUtilInformationTopics, String>() {
@@ -76,6 +80,7 @@ namespace PokemonGo.RocketAPI.Logic.Utils
             { TelegramUtilInformationTopics.Evolve, @"telegram_evolve" },
             { TelegramUtilInformationTopics.Transfer, @"telegram_transfer" },
             { TelegramUtilInformationTopics.Levelup, @"telegram_levelup" },
+            { TelegramUtilInformationTopics.Other, @"telegram_other" },
         };
 
         public void sendInformationText(TelegramUtilInformationTopics topic, params object[] args)
