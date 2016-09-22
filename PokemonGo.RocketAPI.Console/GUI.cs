@@ -187,7 +187,10 @@ namespace PokemonGo.RocketAPI.Console
             var currVersion = Assembly.GetExecutingAssembly().GetName().Version;
             var newestVersion = Program.getNewestVersion();
 
-            groupBox9.Text = $"Your Version: {currVersion} | Newest: {newestVersion}";
+            currVer.Text = currVersion.ToString();
+            ver.Text = $"Version: {currVersion}";
+            newVer.Text = newestVersion.ToString();
+
 
             if (Program.getNewestVersion() > Assembly.GetExecutingAssembly().GetName().Version)
             {
@@ -207,6 +210,11 @@ namespace PokemonGo.RocketAPI.Console
                     }
                 }
 
+            }
+            else
+            {
+                currVer.ForeColor = Color.Green;
+                newVer.ForeColor = Color.Green;
             }
             #endregion
         }
@@ -293,11 +301,12 @@ namespace PokemonGo.RocketAPI.Console
                     text_MaxIVToTransfer.Text = config.ivmaxpercent.ToString();
                     text_MaxCPToTransfer.Text = config.DontTransferWithCPOver.ToString();
                     MinCPtoCatch.Text = config.MinCPtoCatch.ToString();
+                    MinIVtoCatch.Text = config.MinIVtoCatch.ToString();
 
                     // tab 3 - throws
-                    checkBox2.Checked = !Globals.LimitPokeballUse;
-                    checkBox3.Checked = !Globals.LimitGreatballUse;
-                    checkBox7.Checked = !Globals.LimitUltraballUse;
+                    checkBox2.Checked = Globals.LimitPokeballUse;
+                    checkBox3.Checked = Globals.LimitGreatballUse;
+                    checkBox7.Checked = Globals.LimitUltraballUse;
                     numericUpDown1.Value = Globals.Max_Missed_throws;
                     numericUpDown2.Value = Globals.InventoryBasePokeball;
                     numericUpDown3.Value = Globals.InventoryBaseGreatball;
@@ -326,7 +335,7 @@ namespace PokemonGo.RocketAPI.Console
                     text_MaxTopPotions.Text = config.MaxTopPotions.ToString();
                     text_MaxRazzBerrys.Text = config.MaxBerries.ToString();
                     // tab 5 proxy
-                    
+
                     // tab 6 walk
                     text_Speed.Text = config.WalkingSpeedInKilometerPerHour.ToString();
                     text_MinWalkSpeed.Text = config.MinWalkSpeed.ToString();
@@ -366,12 +375,13 @@ namespace PokemonGo.RocketAPI.Console
 
                     UseSkipLaggedAPI.Checked = config.pokevision;
                     SnipePokemonPokeCom.Checked = config.SnipePokemon;
+                    AvoidRegionLock.Checked = config.AvoidRegionLock;
 
                     // tab 8 - update                    
                     checkbox_AutoUpdate.Checked = config.AutoUpdate;
                     checkbox_checkWhileRunning.Checked = config.CheckWhileRunning;
                     langSelected = config.SelectedLanguage;
-                    var success = LoadGlobals();
+                    var success = LoadGlobals(false);
                     if (!success)
                     {
                         MessageBox.Show("Loading Config failed - Check settings before running!");
@@ -410,7 +420,7 @@ namespace PokemonGo.RocketAPI.Console
                 text_MaxRazzBerrys.Text = "100";
                 text_MaxTopPotions.Text = "100";
                 text_MaxTopRevives.Text = "100";
-                var success = LoadGlobals();
+                var success = LoadGlobals(false);
                 if (!success)
                 {
                     MessageBox.Show("Loading Config failed - Check settings before running!");
@@ -502,10 +512,25 @@ namespace PokemonGo.RocketAPI.Console
                 e.Handled = true;
         }
 
+        private const string NEW_YORK_COORS = "40.764883;-73.972967";
         private void button1_Click(object sender, EventArgs e)
         {
-            Save();
-            Dispose();
+            var selectedCoords =Globals.latitute.ToString("0.000000") +";"+Globals.longitude.ToString("0.000000");
+            selectedCoords = selectedCoords.Replace(",",".");
+            if (selectedCoords.Equals(NEW_YORK_COORS))
+            {
+                var ret = MessageBox.Show("Have you set correctly your location?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (ret == DialogResult.No)
+                {
+                    return;
+                }
+            }
+            if (Save())
+            {
+                Dispose();
+            }else
+                MessageBox.Show("Please Review Red Boxes Before Start");
+
         }
 
         private bool textBoxToGlobal(TextBox textBox, string fieldName = "")
@@ -573,7 +598,7 @@ namespace PokemonGo.RocketAPI.Console
             return ret;
         }
 
-        private bool LoadGlobals()
+        private bool LoadGlobals(bool makePrompts=true)
         {
             #region Setting aaaaaaaaaaaall the globals
 
@@ -581,29 +606,15 @@ namespace PokemonGo.RocketAPI.Console
             // Globals.acc <- Is updated at Change combobox comboBox_AccountType             
 
             // Account Info
-            if (!textBoxToGlobal(text_EMail))
-            {            	
-                return false;
-            }
-            if (!textBoxToGlobal(text_Password))
-            {
-                return false;
-            }
+            bool ret = true;
+            ret &= textBoxToGlobal(text_EMail);
+            ret &= textBoxToGlobal(text_Password);
             Globals.usePwdEncryption = checkbox_PWDEncryption.Checked;
 
             // Location
-            if (!textBoxToGlobalDouble(text_Latidude, "latitute"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalDouble(text_Longitude, "longitude"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalDouble(text_Altidude, "altitude"))
-            {
-                return false;
-            }
+            ret &= textBoxToGlobalDouble(text_Latidude, "latitute");
+            ret &= textBoxToGlobalDouble(text_Longitude, "longitude");
+            ret &= textBoxToGlobalDouble(text_Altidude, "altitude");
 
             // Other
             Globals.useluckyegg = checkBox_UseLuckyEggAtEvolve.Checked;
@@ -617,6 +628,10 @@ namespace PokemonGo.RocketAPI.Console
             Globals.useBasicIncubators = checkBox_UseBasicIncubators.Checked;
 
             // tab 2 - pokemons
+            Globals.noCatch.Clear();
+            Globals.noTransfer.Clear();
+            Globals.doEvolve.Clear();
+
             foreach (string pokemon in checkedListBox_PokemonNotToTransfer.CheckedItems)
             {
                 Globals.noTransfer.Add((PokemonId)Enum.Parse(typeof(PokemonId), pokemon));
@@ -633,23 +648,14 @@ namespace PokemonGo.RocketAPI.Console
             Globals.transfer = checkBox_AutoTransferDoublePokemon.Checked;
             Globals.TransferFirstLowIV = checkBox_TransferFirstLowIV.Checked;
 
-            if (!textBoxToGlobalInt(text_MaxDuplicatePokemon, "duplicate"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxIVToTransfer, "ivmaxpercent"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxCPToTransfer, "maxCp"))
-            {
-                return false;
-            }
+            ret &= textBoxToGlobalInt(text_MaxDuplicatePokemon, "duplicate");
+            ret &= textBoxToGlobalInt(text_MaxIVToTransfer, "ivmaxpercent");
+            ret &= textBoxToGlobalInt(text_MaxCPToTransfer, "maxCp");
 
             // tab 3 - Throw
-            Globals.LimitPokeballUse = !checkBox2.Checked;
-            Globals.LimitGreatballUse = !checkBox3.Checked;
-            Globals.LimitUltraballUse = !checkBox7.Checked;
+            Globals.LimitPokeballUse = checkBox2.Checked;
+            Globals.LimitGreatballUse = checkBox3.Checked;
+            Globals.LimitUltraballUse = checkBox7.Checked;
             Globals.Max_Missed_throws = (int)numericUpDown1.Value;
             Globals.InventoryBasePokeball = (int)numericUpDown2.Value;
             Globals.InventoryBaseGreatball = (int)numericUpDown3.Value;
@@ -667,78 +673,26 @@ namespace PokemonGo.RocketAPI.Console
                 Globals.razzberry_chance = Convert.ToDouble(c);
             }
 
-            if (!textBoxToGlobalInt(text_Pb_Excellent, "excellentthrow"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_Pb_Great, "greatthrow"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_Pb_Nice, "nicethrow"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_Pb_Ordinary, "ordinarythrow"))
-            {
-                return false;
-            }
-
-            if (!textBoxToGlobalInt(GreatBallMinCP, "MinCPforGreatBall"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(UltraBallMinCP, "MinCPforUltraBall"))
-            {
-                return false;
-            }
+            ret &= textBoxToGlobalInt(text_Pb_Excellent, "excellentthrow");
+            ret &= textBoxToGlobalInt(text_Pb_Great, "greatthrow");
+            ret &= textBoxToGlobalInt(text_Pb_Nice, "nicethrow");
+            ret &= textBoxToGlobalInt(text_Pb_Ordinary, "ordinarythrow");
+            ret &= textBoxToGlobalInt(GreatBallMinCP, "MinCPforGreatBall");
+            ret &= textBoxToGlobalInt(UltraBallMinCP, "MinCPforUltraBall");
 
             // tab 4 - Items
-            if (!textBoxToGlobalInt(text_MaxPokeballs, "pokeball"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxGreatBalls, "greatball"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxUltraBalls, "ultraball"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxRevives, "revive"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxTopRevives, "toprevive"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxPotions, "potion"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxSuperPotions, "superpotion"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxHyperPotions, "hyperpotion"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxTopPotions, "toppotion"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(text_MaxRazzBerrys, "berry"))
-            {
-                return false;
-            }
-            if (!textBoxToGlobalInt(MinCPtoCatch, "MinCPtoCatch"))
-            {
-                return false;
-            }
-
+            ret &= textBoxToGlobalInt(text_MaxPokeballs, "pokeball");
+            ret &= textBoxToGlobalInt(text_MaxGreatBalls, "greatball");
+            ret &= textBoxToGlobalInt(text_MaxUltraBalls, "ultraball");
+            ret &= textBoxToGlobalInt(text_MaxRevives, "revive");
+            ret &= textBoxToGlobalInt(text_MaxTopRevives, "toprevive");
+            ret &= textBoxToGlobalInt(text_MaxPotions, "potion");
+            ret &= textBoxToGlobalInt(text_MaxSuperPotions, "superpotion");
+            ret &= textBoxToGlobalInt(text_MaxHyperPotions, "hyperpotion");
+            ret &= textBoxToGlobalInt(text_MaxTopPotions, "toppotion");
+            ret &= textBoxToGlobalInt(text_MaxRazzBerrys, "berry");
+            ret &= textBoxToGlobalInt(MinCPtoCatch, "MinCPtoCatch");
+            ret &= textBoxToGlobalInt(MinIVtoCatch, "MinIVtoCatch");
             // tab 5 - Proxy
             /*
             UserSettings.Default.UseProxyVerified = checkBox_UseProxy.Checked;
@@ -750,11 +704,8 @@ namespace PokemonGo.RocketAPI.Console
             */
 
             // tab 6 - Walk
-            if (!textBoxToGlobalDouble(text_Speed))
-            {
-                return false;
-            }
-            if (Globals.speed > 15 && Globals.FirstLoad)
+            ret &= textBoxToGlobalDouble(text_Speed);
+            if ((makePrompts) && (Globals.speed > 15 && Globals.FirstLoad))
             {
                 var speed = Globals.speed;
                 var dialogResult = MessageBox.Show("The risk of being banned is significantly greater when using higher than human jogging speeds (e.g. > 15km/hr) Click 'No' to use ~10km/hr instead", $"Are you sure you wish to set your speed to {speed} ?", MessageBoxButtons.YesNo);
@@ -766,10 +717,7 @@ namespace PokemonGo.RocketAPI.Console
             if (value != String.Empty)
                 Globals.MinWalkSpeed = int.Parse(value);
 
-            if (!textBoxToGlobalInt(text_MoveRadius, "radius"))
-            {
-                return false;
-            }
+            ret &= textBoxToGlobalInt(text_MoveRadius, "radius");
 
             if (text_TimeToRun.Text == String.Empty)
                 text_TimeToRun.Text = "0";
@@ -820,13 +768,10 @@ namespace PokemonGo.RocketAPI.Console
 
             Globals.telAPI = text_Telegram_Token.Text;
             Globals.telName = text_Telegram_Name.Text;
-            if (!textBoxToGlobalInt(text_Telegram_LiveStatsDelay, "telDelay"))
-            {
-                return false;
-            }
+            ret &= textBoxToGlobalInt(text_Telegram_LiveStatsDelay, "telDelay");
             Globals.pokevision = UseSkipLaggedAPI.Checked;
             Globals.SnipePokemon = SnipePokemonPokeCom.Checked;
-            if (Globals.SnipePokemon)
+            if ((makePrompts) && (Globals.SnipePokemon && !Globals.FirstLoad))
             {
                 DialogResult result = MessageBox.Show("Sniping has not been tested yet. It could get you banned. Do you want to continue?", "Info", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
                 if (result == DialogResult.OK)
@@ -834,7 +779,7 @@ namespace PokemonGo.RocketAPI.Console
                 else
                     Globals.SnipePokemon = false;
             }
-
+            Globals.AvoidRegionLock = AvoidRegionLock.Checked;
             // tab 8 updates
             Globals.AutoUpdate = checkbox_AutoUpdate.Checked;
             Globals.CheckWhileRunning = checkbox_checkWhileRunning.Checked;
@@ -842,7 +787,7 @@ namespace PokemonGo.RocketAPI.Console
             Globals.settingsLanguage = langSelected;
 
             #endregion
-            return true;
+            return ret;
         }
 
         private bool Save()
@@ -852,10 +797,12 @@ namespace PokemonGo.RocketAPI.Console
             if (success)
             {
                 #region CreatingSettings
+                var encryptedPassword = Encryption.Encrypt(Globals.password);
+                var decryptedPassword = Encryption.Decrypt(encryptedPassword);
 
                 if (Globals.usePwdEncryption)
                 {
-                    Globals.password = Encryption.Encrypt(Globals.password);
+                    Globals.password = encryptedPassword;
                 }
 
                 Settings settings = new Settings();
@@ -881,10 +828,7 @@ namespace PokemonGo.RocketAPI.Console
                 newProfiles.Add(ActiveProfile);
                 profileJSON = Newtonsoft.Json.JsonConvert.SerializeObject(newProfiles);
                 File.WriteAllText(@Program.accountProfiles, profileJSON);
-                if (Globals.usePwdEncryption)
-                {
-                    Globals.password = Encryption.Decrypt(Globals.password);
-                }
+                Globals.password = decryptedPassword;
                 #endregion
                 return true;
             }
@@ -985,6 +929,7 @@ namespace PokemonGo.RocketAPI.Console
         {
             try
             {
+                //if (Control.ModifierKeys == Keys.Shift ) 
                 DisplayLocationSelector();
             }
             catch (Exception ex)
@@ -1344,7 +1289,7 @@ namespace PokemonGo.RocketAPI.Console
             if (Save())
                 MessageBox.Show("Current Configuration Saved as - " + ActiveProfile.ProfileName);
             else
-                MessageBox.Show("Please Review Red Box Before Save");
+                MessageBox.Show("Please Review Red Boxes Before Save");
         }
 
         private void ProfileName_TextChanged(object sender, EventArgs e)
@@ -1370,5 +1315,28 @@ namespace PokemonGo.RocketAPI.Console
             }
         }
 
+        private void linkLabel2_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/Ar1i/");
+        }
+
+        private void linkLabel9_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/Logxn/");
+        }
+
+        private void linkLabel10_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/MTK4355/");
+        }
+
+        private void checkBox7_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+        void TextBoxes_TextChanged(object sender, EventArgs e)
+        {
+            ((TextBox) sender).BackColor = SystemColors.Window;
+        }
     }
 }
