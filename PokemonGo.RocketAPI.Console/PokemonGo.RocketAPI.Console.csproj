@@ -122,6 +122,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangesPanel.cs" />
+    <Compile Include="ChangesPanel.Designer.cs">
+      <DependentUpon>ChangesPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="EggsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -129,6 +133,10 @@
       <DependentUpon>EggsPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Encryption.cs" />
+    <Compile Include="FormChanges.cs" />
+    <Compile Include="FormChanges.Designer.cs">
+      <DependentUpon>FormChanges.cs</DependentUpon>
+    </Compile>
     <Compile Include="GUI.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -166,6 +174,11 @@
     <Compile Include="LocationPanel.Designer.cs">
       <DependentUpon>LocationPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\MapData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MapData.resx</DependentUpon>
+    </Compile>
     <Compile Include="PlayerPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -182,6 +195,11 @@
     <Compile Include="Program.cs" />
     <Compile Include="Prompt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\PokemonSprites.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PokemonSprites.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -193,7 +211,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="TeamSelect.cs" />
+    <Compile Include="TeamSelect.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="TeamSelect.Designer.cs">
       <DependentUpon>TeamSelect.cs</DependentUpon>
     </Compile>
@@ -210,8 +230,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ChangesPanel.resx">
+      <DependentUpon>ChangesPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EggsPanel.resx">
       <DependentUpon>EggsPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormChanges.resx">
+      <DependentUpon>FormChanges.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="IncubatorSelect.resx">
       <DependentUpon>IncubatorSelect.cs</DependentUpon>
@@ -224,6 +250,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="LocationPanel.resx">
       <DependentUpon>LocationPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\MapData.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MapData.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="PlayerPanel.resx">
       <DependentUpon>PlayerPanel.cs</DependentUpon>
@@ -248,7 +278,6 @@
     <EmbeddedResource Include="Lang\spain.json" />
     <EmbeddedResource Include="Lang\tr.json" />
     <EmbeddedResource Include="Lang\arabic.json" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -295,6 +324,12 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\PokemonSprites.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>PokemonSprites.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="PokeData\AdditionalPokeData.json" />
   </ItemGroup>
@@ -353,6 +388,7 @@
     <None Include="Resources\1-200.png" />
     <None Include="Resources\2-200.png" />
     <None Include="Resources\3-200.png" />
+    <None Include="Resources\3-2001.png" />
     <None Include="Resources\4-200.png" />
     <None Include="Resources\5-200.png" />
     <None Include="Resources\6-200.png" />
@@ -502,6 +538,8 @@
     <None Include="Resources\150-200.png" />
     <None Include="Resources\151-200.png" />
     <Content Include="Resources\boy.png" />
+    <None Include="Resources\combo_by_rootofitall-d8ulo4t.gif" />
+    <None Include="Resources\giphy %281%29.gif" />
     <Content Include="Resources\girl.png" />
     <Content Include="Resources\instinct.png" />
     <Content Include="Resources\mystic.png" />
@@ -510,6 +548,7 @@
     <None Include="Resources\team-valor.png" />
     <None Include="Resources\Trainer_F.png" />
     <None Include="Resources\Trainer_M.png" />
+    <None Include="Resources\Ninja.bmp" />
     <Content Include="Resources\valor.png" />
     <None Include="Resources\start_point.png" />
     <None Include="Resources\151-35.png" />
