@@ -1479,8 +1479,6 @@ namespace PokemonGo.RocketAPI.Logic
                         // Update the best ball to ensure we can still throw
                         bestPokeball = await GetBestBall(encounterPokemonResponse?.WildPokemon, escaped);
                     }
-                    caughtPokemonResponse = await CatchPokemonWithRandomVariables(encounter_id, spawnpoint_id, bestPokeball, true);
-                    if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed)
                     while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed || caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
 
                     if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess)
@@ -1489,10 +1487,7 @@ namespace PokemonGo.RocketAPI.Logic
                             _botStats.AddExperience(xp);
 
                         DateTime curDate = DateTime.Now;
-                        _infoObservable.PushNewHuntStats(String.Format("{0}/{1};{2};{3};{4}", poke_lat, poke_long, pokeid, curDate.Ticks, curDate.ToString()) + Environment.NewLine);
-
-                    DateTime curDate = DateTime.Now;
-                    _infoObservable.PushNewHuntStats(String.Format("{0}/{1};{2};{3};{4}", poke_lat, poke_long, pokeid, curDate.Ticks, curDate.ToString()) + ";" + encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp + Environment.NewLine);
+                        _infoObservable.PushNewHuntStats(String.Format("{0}/{1};{2};{3};{4}", poke_lat, poke_long, pokeid, curDate.Ticks, curDate.ToString()) + ";" + encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp + Environment.NewLine);
                         string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
                         string logs = System.IO.Path.Combine(logPath, "PokeLog.txt");
                         var date = DateTime.Now;
