@@ -48,13 +48,7 @@ namespace PokemonGo.RocketAPI.Console
             this.label2 = new System.Windows.Forms.Label();
             this.reloadtimer = new System.Windows.Forms.Timer(this.components);
             this.btnFullPowerUp = new System.Windows.Forms.Button();
-            this.lang_spain_btn2 = new System.Windows.Forms.Button();
-            this.lang_de_btn_2 = new System.Windows.Forms.Button();
-            this.lang_en_btn2 = new System.Windows.Forms.Button();
-            this.btnShowMap = new System.Windows.Forms.Button();
-            this.lang_ptBR_btn2 = new System.Windows.Forms.Button();
             this.freezedenshit = new System.Windows.Forms.Timer(this.components);
-            this.lang_tr_btn2 = new System.Windows.Forms.Button();
             this.btnForceUnban = new System.Windows.Forms.Button();
             this.numPwrUpLimit = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -65,7 +59,9 @@ namespace PokemonGo.RocketAPI.Console
             this.Options = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnShowMap = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.changesPanel1 = new PokemonGo.RocketAPI.Console.ChangesPanel();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.itemsPanel1 = new PokemonGo.RocketAPI.Console.ItemsPanel();
             this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -74,7 +70,25 @@ namespace PokemonGo.RocketAPI.Console
             this.playerPanel1 = new PokemonGo.RocketAPI.Console.PlayerPanel();
             this.tabPageEggs = new System.Windows.Forms.TabPage();
             this.eggsPanel1 = new PokemonGo.RocketAPI.Console.EggsPanel();
-            this.changesPanel1 = new PokemonGo.RocketAPI.Console.ChangesPanel();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.AvoidRegionLock = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.groupBox23 = new System.Windows.Forms.GroupBox();
+            this.UpdateNotToSnipe = new System.Windows.Forms.Button();
+            this.SelectallNottoSnipe = new System.Windows.Forms.CheckBox();
+            this.checkedListBox_NotToSnipe = new System.Windows.Forms.CheckedListBox();
+            this.SnipePokemonPokeCom = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.SnipeMe = new System.Windows.Forms.Button();
+            this.label64 = new System.Windows.Forms.Label();
+            this.SnipeInfo = new System.Windows.Forms.TextBox();
+            this.lang_tr_btn2 = new System.Windows.Forms.Button();
+            this.lang_ptBR_btn2 = new System.Windows.Forms.Button();
+            this.lang_spain_btn2 = new System.Windows.Forms.Button();
+            this.lang_de_btn_2 = new System.Windows.Forms.Button();
+            this.lang_en_btn2 = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.reloadsecondstextbox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numPwrUpLimit)).BeginInit();
@@ -86,6 +100,9 @@ namespace PokemonGo.RocketAPI.Console
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.tabPageEggs.SuspendLayout();
+            this.tabPage6.SuspendLayout();
+            this.groupBox23.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // PokemonListView
@@ -97,9 +114,9 @@ namespace PokemonGo.RocketAPI.Console
             this.PokemonListView.FullRowSelect = true;
             this.PokemonListView.GridLines = true;
             this.PokemonListView.Location = new System.Drawing.Point(0, 0);
-            this.PokemonListView.Margin = new System.Windows.Forms.Padding(4);
+            this.PokemonListView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.PokemonListView.Name = "PokemonListView";
-            this.PokemonListView.Size = new System.Drawing.Size(714, 309);
+            this.PokemonListView.Size = new System.Drawing.Size(714, 311);
             this.PokemonListView.TabIndex = 0;
             this.PokemonListView.UseCompatibleStateImageBehavior = false;
             this.PokemonListView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseClick);
@@ -119,7 +136,7 @@ namespace PokemonGo.RocketAPI.Console
             // btnEvolve
             // 
             this.btnEvolve.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnEvolve.Location = new System.Drawing.Point(212, 315);
+            this.btnEvolve.Location = new System.Drawing.Point(212, 318);
             this.btnEvolve.Margin = new System.Windows.Forms.Padding(2);
             this.btnEvolve.Name = "btnEvolve";
             this.btnEvolve.Size = new System.Drawing.Size(86, 23);
@@ -131,7 +148,7 @@ namespace PokemonGo.RocketAPI.Console
             // btnUpgrade
             // 
             this.btnUpgrade.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnUpgrade.Location = new System.Drawing.Point(133, 345);
+            this.btnUpgrade.Location = new System.Drawing.Point(133, 347);
             this.btnUpgrade.Margin = new System.Windows.Forms.Padding(2);
             this.btnUpgrade.Name = "btnUpgrade";
             this.btnUpgrade.Size = new System.Drawing.Size(74, 23);
@@ -143,7 +160,7 @@ namespace PokemonGo.RocketAPI.Console
             // btnTransfer
             // 
             this.btnTransfer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnTransfer.Location = new System.Drawing.Point(212, 345);
+            this.btnTransfer.Location = new System.Drawing.Point(212, 347);
             this.btnTransfer.Margin = new System.Windows.Forms.Padding(2);
             this.btnTransfer.Name = "btnTransfer";
             this.btnTransfer.Size = new System.Drawing.Size(86, 23);
@@ -155,7 +172,7 @@ namespace PokemonGo.RocketAPI.Console
             // btnIVToNick
             // 
             this.btnIVToNick.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnIVToNick.Location = new System.Drawing.Point(133, 315);
+            this.btnIVToNick.Location = new System.Drawing.Point(133, 318);
             this.btnIVToNick.Margin = new System.Windows.Forms.Padding(2);
             this.btnIVToNick.Name = "btnIVToNick";
             this.btnIVToNick.Size = new System.Drawing.Size(74, 23);
@@ -228,7 +245,7 @@ namespace PokemonGo.RocketAPI.Console
             // 
             this.checkBoxreload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxreload.AutoSize = true;
-            this.checkBoxreload.Location = new System.Drawing.Point(65, 20);
+            this.checkBoxreload.Location = new System.Drawing.Point(64, 20);
             this.checkBoxreload.Name = "checkBoxreload";
             this.checkBoxreload.Size = new System.Drawing.Size(89, 17);
             this.checkBoxreload.TabIndex = 6;
@@ -276,7 +293,7 @@ namespace PokemonGo.RocketAPI.Console
             // btnFullPowerUp
             // 
             this.btnFullPowerUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnFullPowerUp.Location = new System.Drawing.Point(14, 345);
+            this.btnFullPowerUp.Location = new System.Drawing.Point(14, 347);
             this.btnFullPowerUp.Margin = new System.Windows.Forms.Padding(2);
             this.btnFullPowerUp.Name = "btnFullPowerUp";
             this.btnFullPowerUp.Size = new System.Drawing.Size(112, 23);
@@ -284,6 +301,459 @@ namespace PokemonGo.RocketAPI.Console
             this.btnFullPowerUp.Text = "FULL-PowerUp";
             this.btnFullPowerUp.UseVisualStyleBackColor = true;
             this.btnFullPowerUp.Click += new System.EventHandler(this.btnFullPowerUp_Click);
+            // 
+            // freezedenshit
+            // 
+            this.freezedenshit.Interval = 5000;
+            this.freezedenshit.Tick += new System.EventHandler(this.freezedenshit_Tick);
+            // 
+            // btnForceUnban
+            // 
+            this.btnForceUnban.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnForceUnban.Location = new System.Drawing.Point(514, 316);
+            this.btnForceUnban.Margin = new System.Windows.Forms.Padding(2);
+            this.btnForceUnban.Name = "btnForceUnban";
+            this.btnForceUnban.Size = new System.Drawing.Size(106, 23);
+            this.btnForceUnban.TabIndex = 43;
+            this.btnForceUnban.Text = "Pause Walking";
+            this.btnForceUnban.UseVisualStyleBackColor = true;
+            this.btnForceUnban.Click += new System.EventHandler(this.btnForceUnban_Click);
+            // 
+            // numPwrUpLimit
+            // 
+            this.numPwrUpLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.numPwrUpLimit.Location = new System.Drawing.Point(86, 321);
+            this.numPwrUpLimit.Maximum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.numPwrUpLimit.Name = "numPwrUpLimit";
+            this.numPwrUpLimit.Size = new System.Drawing.Size(39, 20);
+            this.numPwrUpLimit.TabIndex = 44;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(4, 324);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(78, 13);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Power Up Limit";
+            // 
+            // checkBox1
+            // 
+            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Location = new System.Drawing.Point(517, 347);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(93, 17);
+            this.checkBox1.TabIndex = 6;
+            this.checkBox1.Text = "Repeat Route";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
+            // button1
+            // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button1.Location = new System.Drawing.Point(429, 346);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(80, 23);
+            this.button1.TabIndex = 43;
+            this.button1.Text = "Use Incense";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button2.Location = new System.Drawing.Point(429, 316);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(80, 23);
+            this.button2.TabIndex = 43;
+            this.button2.Text = "Use Lure";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button3.Location = new System.Drawing.Point(319, 346);
+            this.button3.Margin = new System.Windows.Forms.Padding(2);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(106, 23);
+            this.button3.TabIndex = 43;
+            this.button3.Text = "Use Lucky Egg";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // Options
+            // 
+            this.Options.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Options.Controls.Add(this.tabPage2);
+            this.Options.Controls.Add(this.tabPage1);
+            this.Options.Controls.Add(this.tabPage3);
+            this.Options.Controls.Add(this.tabPage4);
+            this.Options.Controls.Add(this.tabPage5);
+            this.Options.Controls.Add(this.tabPageEggs);
+            this.Options.Controls.Add(this.tabPage6);
+            this.Options.Location = new System.Drawing.Point(13, 11);
+            this.Options.Name = "Options";
+            this.Options.SelectedIndex = 0;
+            this.Options.Size = new System.Drawing.Size(719, 413);
+            this.Options.TabIndex = 46;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.AutoScroll = true;
+            this.tabPage2.Controls.Add(this.groupBox2);
+            this.tabPage2.Controls.Add(this.PokemonListView);
+            this.tabPage2.Controls.Add(this.btnUpgrade);
+            this.tabPage2.Controls.Add(this.button2);
+            this.tabPage2.Controls.Add(this.btnShowMap);
+            this.tabPage2.Controls.Add(this.label1);
+            this.tabPage2.Controls.Add(this.checkBox1);
+            this.tabPage2.Controls.Add(this.btnFullPowerUp);
+            this.tabPage2.Controls.Add(this.btnForceUnban);
+            this.tabPage2.Controls.Add(this.numPwrUpLimit);
+            this.tabPage2.Controls.Add(this.button1);
+            this.tabPage2.Controls.Add(this.btnEvolve);
+            this.tabPage2.Controls.Add(this.btnTransfer);
+            this.tabPage2.Controls.Add(this.btnIVToNick);
+            this.tabPage2.Controls.Add(this.button3);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage2.Size = new System.Drawing.Size(711, 387);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Pokemon List";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.groupBox2.Controls.Add(this.checkBoxreload);
+            this.groupBox2.Controls.Add(this.reloadsecondstextbox);
+            this.groupBox2.Controls.Add(this.btnreload);
+            this.groupBox2.Location = new System.Drawing.Point(2, 262);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBox2.Size = new System.Drawing.Size(212, 48);
+            this.groupBox2.TabIndex = 46;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Refresh Pokemon List";
+            // 
+            // btnShowMap
+            // 
+            this.btnShowMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnShowMap.Image = global::PokemonGo.RocketAPI.Console.Properties.Resources.map;
+            this.btnShowMap.Location = new System.Drawing.Point(650, 318);
+            this.btnShowMap.Name = "btnShowMap";
+            this.btnShowMap.Size = new System.Drawing.Size(58, 52);
+            this.btnShowMap.TabIndex = 12;
+            this.btnShowMap.UseVisualStyleBackColor = true;
+            this.btnShowMap.Click += new System.EventHandler(this.btnShowMap_Click);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.changesPanel1);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Size = new System.Drawing.Size(711, 387);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Change Options";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // changesPanel1
+            // 
+            this.changesPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.changesPanel1.Location = new System.Drawing.Point(0, 0);
+            this.changesPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.changesPanel1.Name = "changesPanel1";
+            this.changesPanel1.Size = new System.Drawing.Size(716, 383);
+            this.changesPanel1.TabIndex = 0;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.itemsPanel1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPage3.Size = new System.Drawing.Size(711, 387);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Items";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // itemsPanel1
+            // 
+            this.itemsPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.itemsPanel1.Location = new System.Drawing.Point(5, 5);
+            this.itemsPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.itemsPanel1.Name = "itemsPanel1";
+            this.itemsPanel1.Size = new System.Drawing.Size(700, 376);
+            this.itemsPanel1.TabIndex = 0;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.locationPanel1);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage4.Size = new System.Drawing.Size(711, 387);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Location";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // locationPanel1
+            // 
+            this.locationPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.locationPanel1.Location = new System.Drawing.Point(3, 3);
+            this.locationPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.locationPanel1.Name = "locationPanel1";
+            this.locationPanel1.Size = new System.Drawing.Size(704, 386);
+            this.locationPanel1.TabIndex = 0;
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.playerPanel1);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPage5.Size = new System.Drawing.Size(711, 387);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Player Information";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // playerPanel1
+            // 
+            this.playerPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.playerPanel1.BuddyInfoEnabled = false;
+            this.playerPanel1.Location = new System.Drawing.Point(0, 0);
+            this.playerPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.playerPanel1.Name = "playerPanel1";
+            this.playerPanel1.Size = new System.Drawing.Size(707, 238);
+            this.playerPanel1.TabIndex = 0;
+            // 
+            // tabPageEggs
+            // 
+            this.tabPageEggs.Controls.Add(this.eggsPanel1);
+            this.tabPageEggs.Location = new System.Drawing.Point(4, 22);
+            this.tabPageEggs.Margin = new System.Windows.Forms.Padding(2);
+            this.tabPageEggs.Name = "tabPageEggs";
+            this.tabPageEggs.Padding = new System.Windows.Forms.Padding(2);
+            this.tabPageEggs.Size = new System.Drawing.Size(711, 387);
+            this.tabPageEggs.TabIndex = 5;
+            this.tabPageEggs.Text = "Eggs";
+            this.tabPageEggs.UseVisualStyleBackColor = true;
+            // 
+            // eggsPanel1
+            // 
+            this.eggsPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.eggsPanel1.Location = new System.Drawing.Point(2, 3);
+            this.eggsPanel1.Margin = new System.Windows.Forms.Padding(2);
+            this.eggsPanel1.Name = "eggsPanel1";
+            this.eggsPanel1.Size = new System.Drawing.Size(705, 383);
+            this.eggsPanel1.TabIndex = 0;
+            // 
+            // tabPage6
+            // 
+            this.tabPage6.Controls.Add(this.AvoidRegionLock);
+            this.tabPage6.Controls.Add(this.label4);
+            this.tabPage6.Controls.Add(this.label5);
+            this.tabPage6.Controls.Add(this.label3);
+            this.tabPage6.Controls.Add(this.groupBox23);
+            this.tabPage6.Controls.Add(this.SnipePokemonPokeCom);
+            this.tabPage6.Controls.Add(this.groupBox1);
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage6.Size = new System.Drawing.Size(711, 387);
+            this.tabPage6.TabIndex = 6;
+            this.tabPage6.Text = "Sniper Tools";
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // AvoidRegionLock
+            // 
+            this.AvoidRegionLock.AutoSize = true;
+            this.AvoidRegionLock.Checked = true;
+            this.AvoidRegionLock.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.AvoidRegionLock.Location = new System.Drawing.Point(26, 310);
+            this.AvoidRegionLock.Name = "AvoidRegionLock";
+            this.AvoidRegionLock.Size = new System.Drawing.Size(177, 17);
+            this.AvoidRegionLock.TabIndex = 70;
+            this.AvoidRegionLock.Text = "Avoid Region Locked Pokemon";
+            this.AvoidRegionLock.UseVisualStyleBackColor = true;
+            this.AvoidRegionLock.CheckedChanged += new System.EventHandler(this.AvoidRegionLock_CheckedChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(241, 159);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(245, 20);
+            this.label4.TabIndex = 72;
+            this.label4.Text = "Venusaur|30.123456|-97.123456";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(282, 186);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(143, 13);
+            this.label5.TabIndex = 72;
+            this.label5.Text = "please use decimals for now.";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(233, 138);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(237, 13);
+            this.label3.TabIndex = 72;
+            this.label3.Text = "You must enter Snipe Info in the following format!";
+            // 
+            // groupBox23
+            // 
+            this.groupBox23.Controls.Add(this.UpdateNotToSnipe);
+            this.groupBox23.Controls.Add(this.SelectallNottoSnipe);
+            this.groupBox23.Controls.Add(this.checkedListBox_NotToSnipe);
+            this.groupBox23.Location = new System.Drawing.Point(26, 26);
+            this.groupBox23.Name = "groupBox23";
+            this.groupBox23.Size = new System.Drawing.Size(176, 254);
+            this.groupBox23.TabIndex = 71;
+            this.groupBox23.TabStop = false;
+            this.groupBox23.Text = "Pokemon - Not to Snipe";
+            // 
+            // UpdateNotToSnipe
+            // 
+            this.UpdateNotToSnipe.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F);
+            this.UpdateNotToSnipe.Location = new System.Drawing.Point(106, 231);
+            this.UpdateNotToSnipe.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.UpdateNotToSnipe.Name = "UpdateNotToSnipe";
+            this.UpdateNotToSnipe.Size = new System.Drawing.Size(60, 18);
+            this.UpdateNotToSnipe.TabIndex = 33;
+            this.UpdateNotToSnipe.Text = "Update";
+            this.UpdateNotToSnipe.UseVisualStyleBackColor = true;
+            this.UpdateNotToSnipe.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // SelectallNottoSnipe
+            // 
+            this.SelectallNottoSnipe.AutoSize = true;
+            this.SelectallNottoSnipe.Location = new System.Drawing.Point(6, 231);
+            this.SelectallNottoSnipe.Name = "SelectallNottoSnipe";
+            this.SelectallNottoSnipe.Size = new System.Drawing.Size(69, 17);
+            this.SelectallNottoSnipe.TabIndex = 32;
+            this.SelectallNottoSnipe.Text = "Select all";
+            this.SelectallNottoSnipe.UseVisualStyleBackColor = true;
+            this.SelectallNottoSnipe.CheckedChanged += new System.EventHandler(this.SelectallNottoSnipe_CheckedChanged);
+            // 
+            // checkedListBox_NotToSnipe
+            // 
+            this.checkedListBox_NotToSnipe.CheckOnClick = true;
+            this.checkedListBox_NotToSnipe.FormattingEnabled = true;
+            this.checkedListBox_NotToSnipe.Location = new System.Drawing.Point(6, 20);
+            this.checkedListBox_NotToSnipe.Name = "checkedListBox_NotToSnipe";
+            this.checkedListBox_NotToSnipe.ScrollAlwaysVisible = true;
+            this.checkedListBox_NotToSnipe.Size = new System.Drawing.Size(160, 199);
+            this.checkedListBox_NotToSnipe.TabIndex = 0;
+            // 
+            // SnipePokemonPokeCom
+            // 
+            this.SnipePokemonPokeCom.AutoSize = true;
+            this.SnipePokemonPokeCom.Location = new System.Drawing.Point(26, 286);
+            this.SnipePokemonPokeCom.Name = "SnipePokemonPokeCom";
+            this.SnipePokemonPokeCom.Size = new System.Drawing.Size(195, 17);
+            this.SnipePokemonPokeCom.TabIndex = 71;
+            this.SnipePokemonPokeCom.Text = "Enable Automatic Pokemon Sniping";
+            this.SnipePokemonPokeCom.UseVisualStyleBackColor = true;
+            this.SnipePokemonPokeCom.CheckedChanged += new System.EventHandler(this.SnipePokemonPokeCom_CheckedChanged);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.SnipeMe);
+            this.groupBox1.Controls.Add(this.label64);
+            this.groupBox1.Controls.Add(this.SnipeInfo);
+            this.groupBox1.Location = new System.Drawing.Point(217, 26);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Size = new System.Drawing.Size(290, 100);
+            this.groupBox1.TabIndex = 76;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Manual Sniping (Disabled While Under Construction!)";
+            // 
+            // SnipeMe
+            // 
+            this.SnipeMe.BackColor = System.Drawing.Color.MediumAquamarine;
+            this.SnipeMe.Enabled = false;
+            this.SnipeMe.Location = new System.Drawing.Point(17, 65);
+            this.SnipeMe.Name = "SnipeMe";
+            this.SnipeMe.Size = new System.Drawing.Size(259, 22);
+            this.SnipeMe.TabIndex = 74;
+            this.SnipeMe.Text = "Snipe Me!";
+            this.SnipeMe.UseVisualStyleBackColor = false;
+            this.SnipeMe.Click += new System.EventHandler(this.SnipeMe_Click);
+            // 
+            // label64
+            // 
+            this.label64.AutoSize = true;
+            this.label64.Location = new System.Drawing.Point(55, 24);
+            this.label64.Name = "label64";
+            this.label64.Size = new System.Drawing.Size(171, 13);
+            this.label64.TabIndex = 72;
+            this.label64.Text = "Snipe Info (pokemonName|lat|long)";
+            // 
+            // SnipeInfo
+            // 
+            this.SnipeInfo.Enabled = false;
+            this.SnipeInfo.Location = new System.Drawing.Point(17, 41);
+            this.SnipeInfo.Name = "SnipeInfo";
+            this.SnipeInfo.Size = new System.Drawing.Size(260, 20);
+            this.SnipeInfo.TabIndex = 73;
+            // 
+            // lang_tr_btn2
+            // 
+            this.lang_tr_btn2.BackgroundImage = global::PokemonGo.RocketAPI.Console.Properties.Resources.tr1;
+            this.lang_tr_btn2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.lang_tr_btn2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lang_tr_btn2.Location = new System.Drawing.Point(692, 9);
+            this.lang_tr_btn2.Name = "lang_tr_btn2";
+            this.lang_tr_btn2.Size = new System.Drawing.Size(24, 15);
+            this.lang_tr_btn2.TabIndex = 42;
+            this.lang_tr_btn2.UseVisualStyleBackColor = false;
+            this.lang_tr_btn2.Click += new System.EventHandler(this.lang_tr_btn2_Click);
+            // 
+            // lang_ptBR_btn2
+            // 
+            this.lang_ptBR_btn2.BackgroundImage = global::PokemonGo.RocketAPI.Console.Properties.Resources.ptBR;
+            this.lang_ptBR_btn2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.lang_ptBR_btn2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.lang_ptBR_btn2.Location = new System.Drawing.Point(662, 9);
+            this.lang_ptBR_btn2.Name = "lang_ptBR_btn2";
+            this.lang_ptBR_btn2.Size = new System.Drawing.Size(24, 15);
+            this.lang_ptBR_btn2.TabIndex = 42;
+            this.lang_ptBR_btn2.UseVisualStyleBackColor = false;
+            this.lang_ptBR_btn2.Click += new System.EventHandler(this.lang_ptBR_btn2_Click);
             // 
             // lang_spain_btn2
             // 
@@ -322,299 +792,6 @@ namespace PokemonGo.RocketAPI.Console
             this.lang_en_btn2.UseVisualStyleBackColor = false;
             this.lang_en_btn2.Click += new System.EventHandler(this.lang_en_btn2_Click);
             // 
-            // btnShowMap
-            // 
-            this.btnShowMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnShowMap.Image = global::PokemonGo.RocketAPI.Console.Properties.Resources.map;
-            this.btnShowMap.Location = new System.Drawing.Point(650, 315);
-            this.btnShowMap.Name = "btnShowMap";
-            this.btnShowMap.Size = new System.Drawing.Size(58, 52);
-            this.btnShowMap.TabIndex = 12;
-            this.btnShowMap.UseVisualStyleBackColor = true;
-            this.btnShowMap.Click += new System.EventHandler(this.btnShowMap_Click);
-            // 
-            // lang_ptBR_btn2
-            // 
-            this.lang_ptBR_btn2.BackgroundImage = global::PokemonGo.RocketAPI.Console.Properties.Resources.ptBR;
-            this.lang_ptBR_btn2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.lang_ptBR_btn2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.lang_ptBR_btn2.Location = new System.Drawing.Point(662, 9);
-            this.lang_ptBR_btn2.Name = "lang_ptBR_btn2";
-            this.lang_ptBR_btn2.Size = new System.Drawing.Size(24, 15);
-            this.lang_ptBR_btn2.TabIndex = 42;
-            this.lang_ptBR_btn2.UseVisualStyleBackColor = false;
-            this.lang_ptBR_btn2.Click += new System.EventHandler(this.lang_ptBR_btn2_Click);
-            // 
-            // freezedenshit
-            // 
-            this.freezedenshit.Interval = 5000;
-            this.freezedenshit.Tick += new System.EventHandler(this.freezedenshit_Tick);
-            // 
-            // lang_tr_btn2
-            // 
-            this.lang_tr_btn2.BackgroundImage = global::PokemonGo.RocketAPI.Console.Properties.Resources.tr1;
-            this.lang_tr_btn2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.lang_tr_btn2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.lang_tr_btn2.Location = new System.Drawing.Point(692, 9);
-            this.lang_tr_btn2.Name = "lang_tr_btn2";
-            this.lang_tr_btn2.Size = new System.Drawing.Size(24, 15);
-            this.lang_tr_btn2.TabIndex = 42;
-            this.lang_tr_btn2.UseVisualStyleBackColor = false;
-            this.lang_tr_btn2.Click += new System.EventHandler(this.lang_tr_btn2_Click);
-            // 
-            // btnForceUnban
-            // 
-            this.btnForceUnban.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnForceUnban.Location = new System.Drawing.Point(514, 314);
-            this.btnForceUnban.Margin = new System.Windows.Forms.Padding(2);
-            this.btnForceUnban.Name = "btnForceUnban";
-            this.btnForceUnban.Size = new System.Drawing.Size(106, 23);
-            this.btnForceUnban.TabIndex = 43;
-            this.btnForceUnban.Text = "Pause Walking";
-            this.btnForceUnban.UseVisualStyleBackColor = true;
-            this.btnForceUnban.Click += new System.EventHandler(this.btnForceUnban_Click);
-            // 
-            // numPwrUpLimit
-            // 
-            this.numPwrUpLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.numPwrUpLimit.Location = new System.Drawing.Point(86, 318);
-            this.numPwrUpLimit.Maximum = new decimal(new int[] {
-            2000,
-            0,
-            0,
-            0});
-            this.numPwrUpLimit.Name = "numPwrUpLimit";
-            this.numPwrUpLimit.Size = new System.Drawing.Size(39, 20);
-            this.numPwrUpLimit.TabIndex = 44;
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 322);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(78, 13);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Power Up Limit";
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(517, 345);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(93, 17);
-            this.checkBox1.TabIndex = 6;
-            this.checkBox1.Text = "Repeat Route";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button1.Location = new System.Drawing.Point(429, 344);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(80, 23);
-            this.button1.TabIndex = 43;
-            this.button1.Text = "Use Incense";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button2.Location = new System.Drawing.Point(429, 314);
-            this.button2.Margin = new System.Windows.Forms.Padding(2);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(80, 23);
-            this.button2.TabIndex = 43;
-            this.button2.Text = "Use Lure";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button3
-            // 
-            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button3.Location = new System.Drawing.Point(319, 344);
-            this.button3.Margin = new System.Windows.Forms.Padding(2);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(106, 23);
-            this.button3.TabIndex = 43;
-            this.button3.Text = "Use Lucky Egg";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // Options
-            // 
-            this.Options.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.Options.Controls.Add(this.tabPage2);
-            this.Options.Controls.Add(this.tabPage1);
-            this.Options.Controls.Add(this.tabPage3);
-            this.Options.Controls.Add(this.tabPage4);
-            this.Options.Controls.Add(this.tabPage5);
-            this.Options.Controls.Add(this.tabPageEggs);
-            this.Options.Location = new System.Drawing.Point(13, 11);
-            this.Options.Name = "Options";
-            this.Options.SelectedIndex = 0;
-            this.Options.Size = new System.Drawing.Size(719, 413);
-            this.Options.TabIndex = 46;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.AutoScroll = true;
-            this.tabPage2.Controls.Add(this.groupBox2);
-            this.tabPage2.Controls.Add(this.PokemonListView);
-            this.tabPage2.Controls.Add(this.btnUpgrade);
-            this.tabPage2.Controls.Add(this.button2);
-            this.tabPage2.Controls.Add(this.btnShowMap);
-            this.tabPage2.Controls.Add(this.label1);
-            this.tabPage2.Controls.Add(this.checkBox1);
-            this.tabPage2.Controls.Add(this.btnFullPowerUp);
-            this.tabPage2.Controls.Add(this.btnForceUnban);
-            this.tabPage2.Controls.Add(this.numPwrUpLimit);
-            this.tabPage2.Controls.Add(this.button1);
-            this.tabPage2.Controls.Add(this.btnEvolve);
-            this.tabPage2.Controls.Add(this.btnTransfer);
-            this.tabPage2.Controls.Add(this.btnIVToNick);
-            this.tabPage2.Controls.Add(this.button3);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(711, 387);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Pokemon List";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.groupBox2.Controls.Add(this.checkBoxreload);
-            this.groupBox2.Controls.Add(this.reloadsecondstextbox);
-            this.groupBox2.Controls.Add(this.btnreload);
-            this.groupBox2.Location = new System.Drawing.Point(2, 259);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox2.Size = new System.Drawing.Size(212, 48);
-            this.groupBox2.TabIndex = 46;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Refresh Pokemon List";
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.changesPanel1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(711, 387);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Change Options";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.itemsPanel1);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage3.Size = new System.Drawing.Size(711, 387);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Items";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // itemsPanel1
-            // 
-            this.itemsPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.itemsPanel1.Location = new System.Drawing.Point(5, 5);
-            this.itemsPanel1.Margin = new System.Windows.Forms.Padding(4);
-            this.itemsPanel1.Name = "itemsPanel1";
-            this.itemsPanel1.Size = new System.Drawing.Size(702, 381);
-            this.itemsPanel1.TabIndex = 0;
-            // 
-            // tabPage4
-            // 
-            this.tabPage4.Controls.Add(this.locationPanel1);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(711, 387);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Location";
-            this.tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // locationPanel1
-            // 
-            this.locationPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.locationPanel1.Location = new System.Drawing.Point(3, 3);
-            this.locationPanel1.Margin = new System.Windows.Forms.Padding(4);
-            this.locationPanel1.Name = "locationPanel1";
-            this.locationPanel1.Size = new System.Drawing.Size(704, 384);
-            this.locationPanel1.TabIndex = 0;
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Controls.Add(this.playerPanel1);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPage5.Size = new System.Drawing.Size(711, 387);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Player Information";
-            this.tabPage5.UseVisualStyleBackColor = true;
-            // 
-            // playerPanel1
-            // 
-            this.playerPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.playerPanel1.BuddyInfoEnabled = false;
-            this.playerPanel1.Location = new System.Drawing.Point(0, 0);
-            this.playerPanel1.Margin = new System.Windows.Forms.Padding(4);
-            this.playerPanel1.Name = "playerPanel1";
-            this.playerPanel1.Size = new System.Drawing.Size(707, 238);
-            this.playerPanel1.TabIndex = 0;
-            // 
-            // tabPageEggs
-            // 
-            this.tabPageEggs.Controls.Add(this.eggsPanel1);
-            this.tabPageEggs.Location = new System.Drawing.Point(4, 22);
-            this.tabPageEggs.Margin = new System.Windows.Forms.Padding(2);
-            this.tabPageEggs.Name = "tabPageEggs";
-            this.tabPageEggs.Padding = new System.Windows.Forms.Padding(2);
-            this.tabPageEggs.Size = new System.Drawing.Size(711, 387);
-            this.tabPageEggs.TabIndex = 5;
-            this.tabPageEggs.Text = "Eggs";
-            this.tabPageEggs.UseVisualStyleBackColor = true;
-            // 
-            // eggsPanel1
-            // 
-            this.eggsPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.eggsPanel1.Location = new System.Drawing.Point(2, 3);
-            this.eggsPanel1.Margin = new System.Windows.Forms.Padding(2);
-            this.eggsPanel1.Name = "eggsPanel1";
-            this.eggsPanel1.Size = new System.Drawing.Size(705, 381);
-            this.eggsPanel1.TabIndex = 0;
-            // 
-            // changesPanel1
-            // 
-            this.changesPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.changesPanel1.Location = new System.Drawing.Point(0, 0);
-            this.changesPanel1.Name = "changesPanel1";
-            this.changesPanel1.Size = new System.Drawing.Size(705, 381);
-            this.changesPanel1.TabIndex = 0;
-            // 
             // Pokemons
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -629,7 +806,7 @@ namespace PokemonGo.RocketAPI.Console
             this.Controls.Add(this.label2);
             this.Controls.Add(this.Options);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(735, 495);
+            this.MinimumSize = new System.Drawing.Size(734, 493);
             this.Name = "Pokemons";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Pokemon List";
@@ -648,6 +825,12 @@ namespace PokemonGo.RocketAPI.Console
             this.tabPage4.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.tabPageEggs.ResumeLayout(false);
+            this.tabPage6.ResumeLayout(false);
+            this.tabPage6.PerformLayout();
+            this.groupBox23.ResumeLayout(false);
+            this.groupBox23.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -702,5 +885,19 @@ namespace PokemonGo.RocketAPI.Console
         private System.Windows.Forms.TabPage tabPageEggs;
         private PokemonGo.RocketAPI.Console.EggsPanel eggsPanel1;
         private PokemonGo.RocketAPI.Console.ChangesPanel changesPanel1;
+        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.GroupBox groupBox23;
+        private System.Windows.Forms.CheckBox SelectallNottoSnipe;
+        private System.Windows.Forms.CheckedListBox checkedListBox_NotToSnipe;
+        private System.Windows.Forms.CheckBox AvoidRegionLock;
+        private System.Windows.Forms.CheckBox SnipePokemonPokeCom;
+        private System.Windows.Forms.TextBox SnipeInfo;
+        private System.Windows.Forms.Label label64;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button SnipeMe;
+        private System.Windows.Forms.Button UpdateNotToSnipe;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label3;
     }
 }
