@@ -1556,8 +1556,7 @@ namespace PokemonGo.RocketAPI.Logic
                     while (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchMissed || caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
 
                             
-                        DateTime curDate = DateTime.Now;
-                        _infoObservable.PushNewHuntStats(String.Format("{0}/{1};{2};{3};{4}", poke_lat, poke_long, pokeid, curDate.Ticks, curDate.ToString()) + ";" + encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp + Environment.NewLine);
+                        
                     if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess)
                     {
                         DeletePokemonFromMap(encounterPokemonResponse.WildPokemon.SpawnPointId);
@@ -1565,7 +1564,7 @@ namespace PokemonGo.RocketAPI.Logic
                             _botStats.AddExperience(xp);
 
                         DateTime curDate = DateTime.Now;
-                        _infoObservable.PushNewHuntStats(String.Format("{0}/{1};{2};{3};{4}", poke_lat, poke_long, pokeid, curDate.Ticks, curDate.ToString()) + Environment.NewLine);
+                        _infoObservable.PushNewHuntStats(String.Format("{0}/{1};{2};{3};{4}", poke_lat, poke_long, pokeid, curDate.Ticks, curDate.ToString()) + ";" + encounterPokemonResponse?.WildPokemon?.PokemonData?.Cp + Environment.NewLine);
 
                         string logPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
                         string logs = System.IO.Path.Combine(logPath, "PokeLog.txt");

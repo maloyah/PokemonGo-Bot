@@ -178,7 +178,9 @@
     <Compile Include="LocationPanel.Designer.cs">
       <DependentUpon>LocationPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="PokesniperTool.cs" />
+    <Compile Include="PokesniperTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="PokesniperTool.Designer.cs">
       <DependentUpon>PokesniperTool.cs</DependentUpon>
     </Compile>
