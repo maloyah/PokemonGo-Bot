@@ -121,6 +121,7 @@ namespace PokemonGo.RocketAPI.Console
                     pokeIDS[pokemon.ToString()] = i;
                     checkedListBox_PokemonNotToTransfer.Items.Add(pokemon.ToString());
                     checkedListBox_PokemonNotToCatch.Items.Add(pokemon.ToString());
+                    checkedListBox_NotToSnipe.Items.Add(pokemon.ToString());
                     if (!(evolveBlacklist.Contains(i)))
                     {
                         checkedListBox_PokemonToEvolve.Items.Add(pokemon.ToString());
@@ -130,6 +131,7 @@ namespace PokemonGo.RocketAPI.Console
                     i++;
                 }
             }
+            Globals.NotToSnipe = new List<PokemonId>();
             Globals.doEvolve = new List<PokemonId>();
             Globals.noCatch = new List<PokemonId>();
             Globals.noTransfer = new List<PokemonId>();
@@ -293,6 +295,13 @@ namespace PokemonGo.RocketAPI.Console
                         {
                             string _id = Id.ToString();
                             checkedListBox_PokemonToEvolve.SetItemChecked(evolveIDS[_id] - 1, true);
+                        }
+
+                    if (config.NotToSnipe != null)
+                        foreach (PokemonId Id in config.NotToSnipe)
+                        {
+                            string _id = Id.ToString();
+                            checkedListBox_NotToSnipe.SetItemChecked(pokeIDS[_id] - 1, true);
                         }
 
                     checkBox_AutoTransferDoublePokemon.Checked = config.TransferDoublePokemons;
@@ -475,8 +484,7 @@ namespace PokemonGo.RocketAPI.Console
         }
         //Account Type Changed Event
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Globals.acc = comboBox_AccountType.SelectedIndex == 0 ? Enums.AuthType.Google : Enums.AuthType.Ptc;
+        {            
             if (comboBox_AccountType.SelectedIndex == 0)
                 label2.Text = "E-Mail:";
             else
@@ -603,7 +611,7 @@ namespace PokemonGo.RocketAPI.Console
             #region Setting aaaaaaaaaaaall the globals
 
             // tab 1 - General     
-            // Globals.acc <- Is updated at Change combobox comboBox_AccountType             
+            Globals.acc = (comboBox_AccountType.SelectedIndex == 0) ? Enums.AuthType.Google : Enums.AuthType.Ptc;
 
             // Account Info
             bool ret = true;
@@ -631,6 +639,7 @@ namespace PokemonGo.RocketAPI.Console
             Globals.noCatch.Clear();
             Globals.noTransfer.Clear();
             Globals.doEvolve.Clear();
+            Globals.NotToSnipe.Clear();
 
             foreach (string pokemon in checkedListBox_PokemonNotToTransfer.CheckedItems)
             {
@@ -643,6 +652,10 @@ namespace PokemonGo.RocketAPI.Console
             foreach (string pokemon in checkedListBox_PokemonToEvolve.CheckedItems)
             {
                 Globals.doEvolve.Add((PokemonId)Enum.Parse(typeof(PokemonId), pokemon));
+            }
+            foreach (string pokemon in checkedListBox_NotToSnipe.CheckedItems)
+            {
+                Globals.NotToSnipe.Add((PokemonId)Enum.Parse(typeof(PokemonId), pokemon));
             }
             // bot settings
             Globals.transfer = checkBox_AutoTransferDoublePokemon.Checked;
@@ -870,6 +883,15 @@ namespace PokemonGo.RocketAPI.Console
             }
         }
 
+        private void SelectallNottoSnipe_CheckedChanged(object sender, EventArgs e)
+        {
+            int i = 0;
+            while (i < checkedListBox_NotToSnipe.Items.Count)
+            {
+                checkedListBox_NotToSnipe.SetItemChecked(i, SelectallNottoSnipe.Checked);
+                i++;
+            }
+        }
 
         private void checkBox8_CheckedChanged(object sender, EventArgs e)
         {
@@ -929,7 +951,10 @@ namespace PokemonGo.RocketAPI.Console
         {
             try
             {
-                //if (Control.ModifierKeys == Keys.Shift ) 
+                if (Control.ModifierKeys == Keys.Shift ) {
+                    new PokesniperTool().Show();
+                    return;
+                }
                 DisplayLocationSelector();
             }
             catch (Exception ex)
@@ -971,7 +996,7 @@ namespace PokemonGo.RocketAPI.Console
 
         private void TextBoxes_Throws_TextChanged(object sender, EventArgs e)
         {
-            if (Globals.FirstLoad)
+            if (!Globals.FirstLoad)
             {
                 int throwsChanceSum = 0;
 
@@ -1337,6 +1362,6 @@ namespace PokemonGo.RocketAPI.Console
         void TextBoxes_TextChanged(object sender, EventArgs e)
         {
             ((TextBox) sender).BackColor = SystemColors.Window;
-        }
+        }        
     }
 }
